@@ -1,4 +1,4 @@
-const offersPoint =  [
+const offer =  [
   {
     type: 'bus',
     offers: [
@@ -17,4 +17,4 @@ const offersPoint =  [
   },
 ];
 
-export {offersPoint};
+export {offer};

@@ -1,6 +1,6 @@
 
 
-const generatePoint = () => {
+const generatePointEdit = () => {
   return {
     type: 'bus',
     dateIn: '2019-03-18T14:30',
@@ -13,4 +13,4 @@ const generatePoint = () => {
   };
 };
 
-export {generatePoint};
+export {generatePointEdit};
