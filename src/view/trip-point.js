@@ -1,16 +1,8 @@
 import dayjs from 'dayjs';
-
-const subtractDT = (start, end) => {
-  const date1 = dayjs(end);
-  const date2 = dayjs(start);
-  const difference = date1.diff(date2);
-  // const difference = date1.diff(date2, 'month');
-  // console.log(difference);
-  return difference;
-};
+import {subtractDT} from '../mock/utils';
 
 
-const createPointSelectedOffers = (options) => {
+const createPointSelectedOffersMarkup = (options) => {
   return options.length == 0
     ? ''
     : `<ul class="event__selected-offers">
@@ -51,7 +43,7 @@ const createTripPointMarkup = (point) => {
           &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        ${createPointSelectedOffers(options)}
+        ${createPointSelectedOffersMarkup(options)}
         <button class="${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

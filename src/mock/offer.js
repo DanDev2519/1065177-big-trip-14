@@ -97,23 +97,32 @@ const generateOfferList = () => {
   ];
 };
 
-const getAllOffer = (type) => {
-  const offerList = generateOfferList();
-  const allOffers = offerList.filter((obj) => obj.type === type)[0].offers;
-  return allOffers;
-};
+export {generateOfferList};
 
-const generateOffer = (type) => {
-  const allOffers = getAllOffer(type);
-  const offersArray = [];
-  let count = getRandomInteger(0, 5);
-  while (count) {
-    offersArray.push(allOffers[getRandomInteger(0, allOffers.length - 1)]);
-    count--;
-  }
-  const offers = Array.from(new Set(offersArray));
-  return offers;
-};
+// const generateOfferPoint = (type) => {
+//   const offerList = generateOfferList();
+//   const allOffersPoint = offerList.find((obj) => obj.type === type).offers;
+//   const offerChecked = new Array(allOffersPoint.length).fill().map(getRandomBool);
+//   return offerChecked;
+// };
+
+// const getAllOffer = (type) => {
+//   const offerList = getOfferList();
+//   const allOffers = offerList.filter((obj) => obj.type === type)[0].offers;
+//   return allOffers;
+// };
+
+// const generateOffer = (type) => {
+//   const allOffers = getAllOffer(type);
+//   const offersArray = [];
+//   let count = getRandomInteger(0, 5);
+//   while (count) {
+//     offersArray.push(allOffers[getRandomInteger(0, allOffers.length - 1)]);
+//     count--;
+//   }
+//   const offers = Array.from(new Set(offersArray));
+//   return offers;
+// };
 
 //_____________________________
 // Вариант с изменением самой точки марщрута
@@ -147,5 +156,3 @@ const generateOffer = (type) => {
 //   }
 //   return points;
 // };
-
-export {generateOffer, getAllOffer};

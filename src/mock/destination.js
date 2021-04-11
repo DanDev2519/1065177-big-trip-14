@@ -1,4 +1,5 @@
 import {getRandomInteger} from './utils';
+import {CITIES_VISITED} from './const';
 
 const generateDescription = () => {
   const sentenceArray = [
@@ -40,12 +41,18 @@ const generateImages = () => {
 };
 
 const generateDestination = () => {
-  return {
-    // name: destination,
-    description: generateDescription(),
-    img: generateImages(),
-  };
+  const result = [];
+  for (const city of CITIES_VISITED) {
+    result.push({
+      name: city,
+      description: generateDescription(),
+      img: generateImages(),
+    });
+  }
+  return result;
 };
+
+export {generateDestination};
 
 // const generateDestination = () => {
 //   return {
@@ -77,5 +84,3 @@ const generateDestination = () => {
 //     ],
 //   },
 // ]
-
-export {generateDestination};

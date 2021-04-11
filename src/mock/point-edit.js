@@ -1,12 +1,12 @@
 import {generatePoint} from './point';
-import {getAllOffer} from './offer';
-import {generateDestination} from './destination';
+// import {getAllOffer} from './offer';
+// import {generateDestination} from './destination';
 
 
 const generatePointEdit = () => {
   const point = generatePoint();
-  point.options = getAllOffer(point.type);
-  point.info = generateDestination();
+  // point.options = getAllOffer(point.type);
+  // point.info = generateDestination();
 
   return point;
 };

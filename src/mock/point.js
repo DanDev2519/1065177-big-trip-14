@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './utils';
-import {TRIP_TYPE} from './const';
-import {generateOffer} from './offer';
+import {TRIP_TYPE, CITIES_VISITED} from './const';
+import {generateOfferList} from './offer';
 
 const generateTypePoint = () => {
   const randomIndex = getRandomInteger(0, TRIP_TYPE.length - 1);
@@ -24,13 +24,21 @@ const addRandomDateTime = (DTin, d = 1, h = 24, m = 60) => {
 };
 
 const generateCity = () => {
-  const city = [
-    'Chamonix',
-    'Amsterdam',
-    'Geneva',
-  ];
-  const randomIndex = getRandomInteger(0, city.length - 1);
-  return city[randomIndex];
+  const randomIndex = getRandomInteger(0, CITIES_VISITED.length - 1);
+  return CITIES_VISITED[randomIndex];
+};
+
+const generateOptions = (type) => {
+  const offersArray = [];
+  const offerList = generateOfferList();
+  const allOffersPoint = offerList.find((obj) => obj.type === type).offers;
+  let count = getRandomInteger(0, 3);
+  while (count) {
+    offersArray.push(allOffersPoint[getRandomInteger(0, allOffersPoint.length - 1)]);
+    count--;
+  }
+  const options = Array.from(new Set(offersArray));
+  return options;
 };
 
 const generatePoint = () => {
@@ -44,7 +52,7 @@ const generatePoint = () => {
     dateOut,
     destination: generateCity(),
     price: getRandomInteger(10, 1000),
-    options: generateOffer(type),
+    options: generateOptions(type),
     isFavorite: Boolean(getRandomInteger()),
   };
 };

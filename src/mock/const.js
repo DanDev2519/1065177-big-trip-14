@@ -11,4 +11,10 @@ const TRIP_TYPE = [
   'restaurant',
 ];
 
-export { TRIP_TYPE };
+const CITIES_VISITED = [
+  'Chamonix',
+  'Amsterdam',
+  'Geneva',
+];
+
+export { TRIP_TYPE, CITIES_VISITED};
