@@ -1,103 +1,143 @@
 import {getRandomInteger} from './utils';
+import {TRIP_TYPE} from './const';
 
 const getRandomCost =  () => getRandomInteger(0, 300);
 
-const generateOfferList = () => {
-  return [
-    {
-      type: 'taxi',
-      offers: [
-        {name: 'Order Uber', cost: getRandomCost()},
-        {name: 'Add luggage', cost:  getRandomCost()},
-        {name: 'Travel by train', cost: getRandomCost()},
-        {name: 'Switch to comfort', cost:  getRandomCost()},
-      ],
-    },
-    {
-      type: 'bus',
-      offers: [
-        {name: 'Add luggage', cost:  getRandomCost()},
-        {name: 'Travel by train', cost: getRandomCost()},
-        {name: 'Book tickets', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'train',
-      offers: [
-        {name: 'Add luggage', cost:  getRandomCost()},
-        {name: 'Switch to comfort', cost:  getRandomCost()},
-        {name: 'Add breakfast', cost: getRandomCost()},
-        {name: 'Travel by plane', cost: getRandomCost()},
-        {name: 'Book tickets', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'ship',
-      offers: [
-        {name: 'Add luggage', cost:  getRandomCost()},
-        {name: 'Switch to comfort', cost:  getRandomCost()},
-        {name: 'Add breakfast', cost: getRandomCost()},
-        {name: 'Travel by plane', cost: getRandomCost()},
-        {name: 'Book tickets', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'transport',
-      offers: [
-        {name: 'Order Uber', cost: getRandomCost()},
-        {name: 'Switch to comfort', cost:  getRandomCost()},
-        {name: 'Rent a car', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'drive',
-      offers: [
-        {name: 'Order Uber', cost: getRandomCost()},
-        {name: 'Rent a car', cost: getRandomCost()},
-        {name: 'Lunch in city', cost: getRandomCost()},
-        {name: 'Travel by train', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'flight',
-      offers: [
-        {name: 'Order Uber', cost: getRandomCost()},
-        {name: 'Add luggage', cost:  getRandomCost()},
-        {name: 'Switch to comfort', cost:  getRandomCost()},
-        {name: 'Add breakfast', cost: getRandomCost()},
-        {name: 'Book tickets', cost: getRandomCost()},
-        {name: 'Travel by train', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'check-in',
-      offers: [
-        {name: 'Order Uber', cost: getRandomCost()},
-        {name: 'Switch to comfort', cost:  getRandomCost()},
-        {name: 'Rent a car', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'sightseeing',
-      offers: [
-        {name: 'Order Uber', cost: getRandomCost()},
-        {name: 'Rent a car', cost: getRandomCost()},
-        {name: 'Book tickets', cost: getRandomCost()},
-        {name: 'Lunch in city', cost: getRandomCost()},
-      ],
-    },
-    {
-      type: 'restaurant',
-      offers: [
-        {name: 'Order Uber', cost: getRandomCost()},
-        {name: 'Add breakfast', cost: getRandomCost()},
-        {name: 'Book table', cost: getRandomCost()},
-      ],
-    },
+const generateOfferArray = () => {
+  let result = [];
+  const offerNames = [
+    'Order Uber',
+    'Add luggage',
+    'Switch to comfort',
+    'Rent a car',
+    'Add breakfast',
+    'Book tickets',
+    'Lunch in city',
+    'Travel by train',
+    'Travel by plain',
   ];
+  let count = getRandomInteger(0, 8);
+  while (count) {
+    result.push(
+      {
+        name: offerNames[getRandomInteger(0, offerNames.length - 1)],
+        cost: getRandomCost(),
+      },
+    );
+    count--;
+  }
+  result = Array.from(new Set(result));
+  return result;
+};
+
+const generateOfferList = () => {
+  const result = [];
+  for (const type of TRIP_TYPE) {
+    result.push({
+      type: type,
+      offers: generateOfferArray(),
+    });
+  }
+
+  return result;
 };
 
 export {generateOfferList};
+
+// const generateOfferList = () => {
+//   return [
+//     {
+//       type: 'taxi',
+//       offers: [
+//         {name: 'Order Uber', cost: getRandomCost()},
+//         {name: 'Add luggage', cost:  getRandomCost()},
+//         {name: 'Travel by train', cost: getRandomCost()},
+//         {name: 'Switch to comfort', cost:  getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'bus',
+//       offers: [
+//         {name: 'Add luggage', cost:  getRandomCost()},
+//         {name: 'Travel by train', cost: getRandomCost()},
+//         {name: 'Book tickets', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'train',
+//       offers: [
+//         {name: 'Add luggage', cost:  getRandomCost()},
+//         {name: 'Switch to comfort', cost:  getRandomCost()},
+//         {name: 'Add breakfast', cost: getRandomCost()},
+//         {name: 'Travel by plane', cost: getRandomCost()},
+//         {name: 'Book tickets', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'ship',
+//       offers: [
+//         {name: 'Add luggage', cost:  getRandomCost()},
+//         {name: 'Switch to comfort', cost:  getRandomCost()},
+//         {name: 'Add breakfast', cost: getRandomCost()},
+//         {name: 'Travel by plane', cost: getRandomCost()},
+//         {name: 'Book tickets', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'transport',
+//       offers: [
+//         {name: 'Order Uber', cost: getRandomCost()},
+//         {name: 'Switch to comfort', cost:  getRandomCost()},
+//         {name: 'Rent a car', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'drive',
+//       offers: [
+//         {name: 'Order Uber', cost: getRandomCost()},
+//         {name: 'Rent a car', cost: getRandomCost()},
+//         {name: 'Lunch in city', cost: getRandomCost()},
+//         {name: 'Travel by train', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'flight',
+//       offers: [
+//         {name: 'Order Uber', cost: getRandomCost()},
+//         {name: 'Add luggage', cost:  getRandomCost()},
+//         {name: 'Switch to comfort', cost:  getRandomCost()},
+//         {name: 'Add breakfast', cost: getRandomCost()},
+//         {name: 'Book tickets', cost: getRandomCost()},
+//         {name: 'Travel by train', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'check-in',
+//       offers: [
+//         {name: 'Order Uber', cost: getRandomCost()},
+//         {name: 'Switch to comfort', cost:  getRandomCost()},
+//         {name: 'Rent a car', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'sightseeing',
+//       offers: [
+//         {name: 'Order Uber', cost: getRandomCost()},
+//         {name: 'Rent a car', cost: getRandomCost()},
+//         {name: 'Book tickets', cost: getRandomCost()},
+//         {name: 'Lunch in city', cost: getRandomCost()},
+//       ],
+//     },
+//     {
+//       type: 'restaurant',
+//       offers: [
+//         {name: 'Order Uber', cost: getRandomCost()},
+//         {name: 'Add breakfast', cost: getRandomCost()},
+//         {name: 'Book table', cost: getRandomCost()},
+//       ],
+//     },
+//   ];
+// };
 
 // const generateOfferPoint = (type) => {
 //   const offerList = generateOfferList();
@@ -136,8 +176,8 @@ export {generateOfferList};
 //     'Add breakfast',
 //     'Book tickets',
 //     'Lunch in city',
-//     'Travel by train'
-//     'Travel by plain'
+//     'Travel by train',
+//     'Travel by plain',
 //   ];
 //   const randomIndex = getRandomInteger(0, offerNames.length-1);
 //   return offerNames[randomIndex];

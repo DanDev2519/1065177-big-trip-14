@@ -5,20 +5,21 @@ import {createTripSortMarkup} from './view/trip-sort';
 import {createTripPointListMarkup} from './view/trip-point-list';
 import {createTripPointMarkup} from './view/trip-point';
 import {createTripEditMarkup} from './view/trip-edit';
-// import {createTripCreateMarkup} from './view/trip-create';
+// import {createTripAddMarkup} from './view/trip-create';
 import {createTripMessageMarkup} from './view/trip-message';
 import {generatePoint} from './mock/point';
-// import {generatePointEdit} from './mock/point-edit';
 import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
 
 const TRIP_POINT_COUNT = 4;
 
-const points = new Array(TRIP_POINT_COUNT).fill().map(generatePoint);
-// const editPoint = generatePointEdit();
 const destinations = generateDestination();
 const offers = generateOfferList();
+const points = new Array(TRIP_POINT_COUNT).fill().map(() => {return generatePoint(offers);});
+console.log(points);
+console.log(offers);
+console.log(destinations);
 const filters = generateFilter(points);
 
 const render = (container, template, place = 'beforeend') => {
@@ -42,7 +43,7 @@ if (points.length) {
 
   const tripEventsList = tripEvents.querySelector('.trip-events__list');
 
-  // render(tripEventsList, createTripCreateMarkup());
+  // render(tripEventsList, createTripAddMarkup(offers, destinations));
   const destination = destinations.find((obj) => obj.name === points[0].destination);
   const offerArr = offers.find((obj) => obj.type === points[0].type).offers;
   render(tripEventsList, createTripEditMarkup(points[0], offerArr, destination));

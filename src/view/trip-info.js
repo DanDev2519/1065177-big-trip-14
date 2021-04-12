@@ -28,7 +28,10 @@ const createTripInfoMarkup = (points) => {
   const sarts = points.map((point) => point.dateIn).sort();
   const finishes = points.map((point) => point.dateOut).sort();
   const pointsByDateIn = points.sort(sortObjByField('dateIn'));
-  const costTotal = points.reduce((accumulator, current) => accumulator + current.price, 0);
+  const sumPrices = points.reduce((accumulator, current) => accumulator + current.price, 0);
+  const sumOptionsPointArr = points.map((point) => point.options.reduce((accumulator, current) => accumulator + current.cost, 0));
+  const sumOptions = sumOptionsPointArr.reduce((accumulator, current) => accumulator + current, 0);
+  const costTotal = sumOptions + sumPrices;
 
   return `
     <section class="trip-main__trip-info  trip-info">

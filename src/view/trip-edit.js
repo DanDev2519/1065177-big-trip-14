@@ -56,16 +56,8 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     </section>`;
 };
 
-// __Значения по умолчанию offer и destinationInfo зависят от type и destination
-const createTripEditMarkup = (point = {}, offer = [], destinationInfo = {}) => {
-  const {
-    type = TRIP_TYPE[0],
-    dateIn = dayjs().hour(0).minute(0).format('DD/MM/YY HH:mm'),
-    dateOut = dayjs().hour(0).minute(0).format('DD/MM/YY HH:mm'),
-    destination = CITIES_VISITED[0],
-    price = '',
-    options = [],
-  } = point;
+const createTripEditMarkup = (point, offer, destinationInfo ) => {
+  const {type, dateIn, dateOut, destination, price, options} = point;
   const {description = '', img = []} = destinationInfo;
 
   return `

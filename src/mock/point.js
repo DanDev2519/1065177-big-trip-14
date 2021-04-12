@@ -28,20 +28,21 @@ const generateCity = () => {
   return CITIES_VISITED[randomIndex];
 };
 
-const generateOptions = (type) => {
-  const offersArray = [];
-  const offerList = generateOfferList();
-  const allOffersPoint = offerList.find((obj) => obj.type === type).offers;
-  let count = getRandomInteger(0, 3);
-  while (count) {
-    offersArray.push(allOffersPoint[getRandomInteger(0, allOffersPoint.length - 1)]);
-    count--;
+const generateOptions = (type, offers) => {
+  let options = [];
+  const allOffersPoint = offers.filter((obj) => obj.type === type)[0].offers;
+  if (allOffersPoint.length !== 0) {
+    let count = getRandomInteger(0, 4);
+    while (count) {
+      options.push(allOffersPoint[getRandomInteger(0, allOffersPoint.length - 1)]);
+      count--;
+    }
+    options = Array.from(new Set(options));
   }
-  const options = Array.from(new Set(offersArray));
   return options;
 };
 
-const generatePoint = () => {
+const generatePoint = (offers) => {
   const dateIn = generateDateIn();
   const dateOut = addRandomDateTime(dateIn);
   const type = generateTypePoint();
@@ -52,7 +53,7 @@ const generatePoint = () => {
     dateOut,
     destination: generateCity(),
     price: getRandomInteger(10, 1000),
-    options: generateOptions(type),
+    options: generateOptions(type, offers),
     isFavorite: Boolean(getRandomInteger()),
   };
 };

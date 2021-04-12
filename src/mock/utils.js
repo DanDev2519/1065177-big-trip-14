@@ -1,8 +1,6 @@
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import duration from 'dayjs/plugin/duration';
-// const isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
-// const duration = require('dayjs/plugin/duration');
 dayjs.extend(isSameOrBefore);
 dayjs.extend(duration);
 
