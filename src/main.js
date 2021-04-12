@@ -17,9 +17,6 @@ const TRIP_POINT_COUNT = 4;
 const destinations = generateDestination();
 const offers = generateOfferList();
 const points = new Array(TRIP_POINT_COUNT).fill().map(() => {return generatePoint(offers);});
-console.log(points);
-console.log(offers);
-console.log(destinations);
 const filters = generateFilter(points);
 
 const render = (container, template, place = 'beforeend') => {
