@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import {TRIP_TYPE, CITIES_VISITED} from '../mock/const';
-import {upFirst} from '../mock/utils';
+import {TRIP_TYPE, CITIES_VISITED} from '../const';
+import {upFirst} from '../utils';
 
 const createTypeListMarkup = (list, type) => {
   return list.length == 0 ? '' : `

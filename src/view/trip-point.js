@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {subtractDT} from '../mock/utils';
+import {subtractDT} from '../utils';
 
 
 const createPointSelectedOffersMarkup = (options) => {

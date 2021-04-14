@@ -1,4 +1,4 @@
-import {sortObjByField} from '../mock/utils';
+import {sortObjByField} from '../utils';
 import dayjs from 'dayjs';
 
 
