@@ -3,12 +3,13 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(isSameOrBefore);
 dayjs.extend(duration);
-export const RenderPosition = {
+
+const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
 
-export const renderElement = (container, element, place) => {
+const renderElement = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -19,23 +20,16 @@ export const renderElement = (container, element, place) => {
   }
 };
 
-export const renderTemplate = (container, template, place = 'beforeend') => {
+const renderTemplate = (container, template, place = RenderPosition.BEFOREEND) => {
   container.insertAdjacentHTML(place, template);
 };
 
-// Принцип работы прост:
-// 1. создаём пустой div-блок
-// 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент
-// 3. возвращаем этот DOM-элемент
-export const createElement = (template) => {
-  const newElement = document.createElement('div'); // 1
-  newElement.innerHTML = template; // 2
+const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
 
-  return newElement.firstChild; // 3
+  return newElement.firstChild;
 };
-// Единственный нюанс, что HTML в строке должен иметь общую обёртку,
-// то есть быть чем-то вроде <nav><a>Link 1</a><a>Link 2</a></nav>,
-// а не просто <a>Link 1</a><a>Link 2</a>
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -78,6 +72,10 @@ const isTripFuture = (dueDate) => {
 };
 
 export {
+  RenderPosition,
+  renderElement,
+  renderTemplate,
+  createElement,
   getRandomInteger,
   upFirst,
   sortObjByField,

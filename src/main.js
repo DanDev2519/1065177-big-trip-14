@@ -1,4 +1,4 @@
-import {createSiteMenuMarkup} from './view/site-menu';
+import SiteMenuView from './view/site-menu';
 import {createTripInfoMarkup} from './view/trip-info';
 import {createSiteFiltersMarkup} from './view/site-filters';
 import {createTripSortMarkup} from './view/trip-sort';
@@ -6,14 +6,14 @@ import {createTripPointListMarkup} from './view/trip-point-list';
 import {createTripPointMarkup} from './view/trip-point';
 import {createTripEditMarkup} from './view/trip-edit';
 // import {createTripAddMarkup} from './view/trip-create';
-import {createTripMessageMarkup} from './view/trip-message';
+import MessageCreatePointView from './view/trip-message';
 import {generatePoint} from './mock/point';
 import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
-import {renderTemplate} from './utils.js';
+import {renderTemplate, renderElement, RenderPosition} from './utils';
 
-const TRIP_POINT_COUNT = 4;
+const TRIP_POINT_COUNT = 0;
 
 const destinations = generateDestination();
 const offers = generateOfferList();
@@ -27,7 +27,7 @@ const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
 const pageMain = document.querySelector('.page-main');
 const tripEvents = pageMain.querySelector('.trip-events');
 
-renderTemplate(tripControlsNavigation, createSiteMenuMarkup());
+renderElement(tripControlsNavigation, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 renderTemplate(tripMain, createTripInfoMarkup(points), 'afterbegin');
 renderTemplate(tripControlsFilters, createSiteFiltersMarkup(filters));
 
@@ -46,6 +46,6 @@ if (points.length) {
     renderTemplate(tripEventsList, createTripPointMarkup(points[i]));
   }
 } else {
-  renderTemplate(tripEvents, createTripMessageMarkup());
+  renderElement(tripEvents, new MessageCreatePointView().getElement(), RenderPosition.BEFOREEND);
 }
 
