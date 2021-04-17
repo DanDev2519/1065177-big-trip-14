@@ -5,7 +5,7 @@ import TripSortView from './view/trip-sort';
 import TripEventsLisView from './view/trip-point-list';
 import TripPointView from './view/trip-point';
 import TripEditPointView from './view/trip-edit';
-// import TripAddPointView from './view/trip-create';
+import TripAddPointView from './view/trip-create';
 import MessageCreatePointView from './view/trip-message';
 import {generatePoint} from './mock/point';
 import {generateDestination} from './mock/destination';
@@ -13,7 +13,7 @@ import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
 import {render, RenderPosition} from './utils';
 
-const TRIP_POINT_COUNT = 4;
+const TRIP_POINT_COUNT = 15;
 
 const destinations = generateDestination();
 const offers = generateOfferList();
@@ -53,7 +53,7 @@ const renderPoint = (pointListElement, point) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointListElement, pointComponent.getElement());
 };
 
 const renderEvents = () => {
@@ -62,6 +62,8 @@ const renderEvents = () => {
     render(tripEvents, new TripEventsLisView().getElement());
 
     const tripEventsList = tripEvents.querySelector('.trip-events__list');
+
+    render(tripEventsList, new TripAddPointView(offers, destinations).getElement(), RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < TRIP_POINT_COUNT; i++) {
       renderPoint(tripEventsList, points[i]);
