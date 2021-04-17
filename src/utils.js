@@ -9,7 +9,7 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-const renderElement = (container, element, place) => {
+const render = (container, element, place = RenderPosition.BEFOREEND) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -18,10 +18,6 @@ const renderElement = (container, element, place) => {
       container.append(element);
       break;
   }
-};
-
-const renderTemplate = (container, template, place = RenderPosition.BEFOREEND) => {
-  container.insertAdjacentHTML(place, template);
 };
 
 const createElement = (template) => {
@@ -73,8 +69,7 @@ const isTripFuture = (dueDate) => {
 
 export {
   RenderPosition,
-  renderElement,
-  renderTemplate,
+  render,
   createElement,
   getRandomInteger,
   upFirst,

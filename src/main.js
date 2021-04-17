@@ -1,19 +1,19 @@
 import SiteMenuView from './view/site-menu';
-import {createTripInfoMarkup} from './view/trip-info';
-import {createSiteFiltersMarkup} from './view/site-filters';
-import {createTripSortMarkup} from './view/trip-sort';
-import {createTripPointListMarkup} from './view/trip-point-list';
-import {createTripPointMarkup} from './view/trip-point';
-import {createTripEditMarkup} from './view/trip-edit';
-// import {createTripAddMarkup} from './view/trip-create';
+import TripInfoView from './view/trip-info';
+import FilterView from './view/site-filters';
+import TripSortView from './view/trip-sort';
+import TripEventsLisView from './view/trip-point-list';
+import TripPointView from './view/trip-point';
+import TripEditPointView from './view/trip-edit';
+// import TripAddPointView from './view/trip-create';
 import MessageCreatePointView from './view/trip-message';
 import {generatePoint} from './mock/point';
 import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
-import {renderTemplate, renderElement, RenderPosition} from './utils';
+import {render, RenderPosition} from './utils';
 
-const TRIP_POINT_COUNT = 0;
+const TRIP_POINT_COUNT = 4;
 
 const destinations = generateDestination();
 const offers = generateOfferList();
@@ -27,25 +27,25 @@ const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
 const pageMain = document.querySelector('.page-main');
 const tripEvents = pageMain.querySelector('.trip-events');
 
-renderElement(tripControlsNavigation, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
-renderTemplate(tripMain, createTripInfoMarkup(points), 'afterbegin');
-renderTemplate(tripControlsFilters, createSiteFiltersMarkup(filters));
+render(tripControlsNavigation, new SiteMenuView().getElement());
+render(tripMain, new TripInfoView(points).getElement(), RenderPosition.AFTERBEGIN);
+render(tripControlsFilters, new FilterView(filters).getElement());
 
 if (points.length) {
-  renderTemplate(tripEvents, createTripSortMarkup());
-  renderTemplate(tripEvents, createTripPointListMarkup());
+  render(tripEvents, new TripSortView().getElement());
+  render(tripEvents, new TripEventsLisView().getElement());
 
   const tripEventsList = tripEvents.querySelector('.trip-events__list');
 
-  // renderTemplate(tripEventsList, createTripAddMarkup(offers, destinations));
+  // render(tripEventsList, new TripAddPointView(offers, destinations).getElement());
   const destination = destinations.find((obj) => obj.name === points[0].destination);
   const offerArr = offers.find((obj) => obj.type === points[0].type).offers;
-  renderTemplate(tripEventsList, createTripEditMarkup(points[0], offerArr, destination));
+  render(tripEventsList, new TripEditPointView(points[0], offerArr, destination).getElement());
 
   for (let i = 1; i < TRIP_POINT_COUNT; i++) {
-    renderTemplate(tripEventsList, createTripPointMarkup(points[i]));
+    render(tripEventsList, new TripPointView(points[i]).getElement());
   }
 } else {
-  renderElement(tripEvents, new MessageCreatePointView().getElement(), RenderPosition.BEFOREEND);
+  render(tripEvents, new MessageCreatePointView().getElement());
 }
 

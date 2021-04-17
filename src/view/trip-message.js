@@ -1,8 +1,7 @@
 import {createElement} from '../utils';
 
 const createTripMessageMarkup = () => {
-  return `
-    <p class="trip-events__msg">Click New Event to create your first point</p>
+  return `<p class="trip-events__msg">Click New Event to create your first point</p>
   `;
 };
 

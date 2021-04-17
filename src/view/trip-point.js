@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {subtractDT} from '../utils';
+import {subtractDT, createElement} from '../utils';
 
 
 const createPointSelectedOffersMarkup = (options) => {
@@ -23,8 +23,7 @@ const createTripPointMarkup = (point) => {
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
 
-  return `
-    <li class="trip-events__item">
+  return `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="${dayjs(dateIn).format('YYYY-MM-DD')}">${dayjs(dateIn).format('MMM DD')}</time>
         <div class="event__type">
@@ -58,4 +57,27 @@ const createTripPointMarkup = (point) => {
   `;
 };
 
-export {createTripPointMarkup};
+class TripPoint {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripPointMarkup(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default TripPoint;

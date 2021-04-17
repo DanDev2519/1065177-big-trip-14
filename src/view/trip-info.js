@@ -1,4 +1,4 @@
-import {sortObjByField} from '../utils';
+import {sortObjByField, createElement} from '../utils';
 import dayjs from 'dayjs';
 
 
@@ -33,8 +33,7 @@ const createTripInfoMarkup = (points) => {
   const sumOptions = sumOptionsPointArr.reduce((accumulator, current) => accumulator + current, 0);
   const costTotal = sumOptions + sumPrices;
 
-  return `
-    <section class="trip-main__trip-info  trip-info">
+  return `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
         <h1 class="trip-info__title">${tripNameMarkup(pointsByDateIn)}</h1>
         ${tripDurationMarkup(sarts, finishes)}
@@ -43,8 +42,31 @@ const createTripInfoMarkup = (points) => {
       <p class="trip-info__cost">
         Total: &euro;&nbsp;<span class="trip-info__cost-value">${costTotal}</span>
       </p>
-    </section>
-  `;
+    </section>`;
 };
 
-export {createTripInfoMarkup};
+
+class TripInfo {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoMarkup(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default TripInfo;
