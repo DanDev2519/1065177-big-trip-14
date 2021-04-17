@@ -56,6 +56,21 @@ const renderPoint = (pointListElement, point) => {
   render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
+const renderEvents = () => {
+  if (points.length) {
+    render(tripEvents, new TripSortView().getElement());
+    render(tripEvents, new TripEventsLisView().getElement());
+
+    const tripEventsList = tripEvents.querySelector('.trip-events__list');
+
+    for (let i = 0; i < TRIP_POINT_COUNT; i++) {
+      renderPoint(tripEventsList, points[i]);
+    }
+  } else {
+    render(tripEvents, new MessageCreatePointView().getElement());
+  }
+};
+
 const pageHeader = document.querySelector('.page-header');
 const tripMain = pageHeader.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
@@ -67,16 +82,5 @@ render(tripControlsNavigation, new SiteMenuView().getElement());
 render(tripMain, new TripInfoView(points).getElement(), RenderPosition.AFTERBEGIN);
 render(tripControlsFilters, new FilterView(filters).getElement());
 
-if (points.length) {
-  render(tripEvents, new TripSortView().getElement());
-  render(tripEvents, new TripEventsLisView().getElement());
-
-  const tripEventsList = tripEvents.querySelector('.trip-events__list');
-
-  for (let i = 0; i < TRIP_POINT_COUNT; i++) {
-    renderPoint(tripEventsList, points[i]);
-  }
-} else {
-  render(tripEvents, new MessageCreatePointView().getElement());
-}
+renderEvents();
 
