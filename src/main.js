@@ -20,6 +20,42 @@ const offers = generateOfferList();
 const points = new Array(TRIP_POINT_COUNT).fill().map(() => {return generatePoint(offers);});
 const filters = generateFilter(points);
 
+const renderPoint = (pointListElement, point) => {
+  const destination = destinations.find((obj) => obj.name === point.destination);
+  const offerArr = offers.find((obj) => obj.type === point.type).offers;
+  const pointComponent = new TripPointView(point);
+  const pointEditComponent = new TripEditPointView(point, offerArr, destination);
+
+  const switchPointToEdit = () => {
+    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+  };
+
+  const switchPointToView = () => {
+    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      switchPointToView();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    switchPointToEdit();
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+
+  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    switchPointToView();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
 const pageHeader = document.querySelector('.page-header');
 const tripMain = pageHeader.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
@@ -37,13 +73,8 @@ if (points.length) {
 
   const tripEventsList = tripEvents.querySelector('.trip-events__list');
 
-  // render(tripEventsList, new TripAddPointView(offers, destinations).getElement());
-  const destination = destinations.find((obj) => obj.name === points[0].destination);
-  const offerArr = offers.find((obj) => obj.type === points[0].type).offers;
-  render(tripEventsList, new TripEditPointView(points[0], offerArr, destination).getElement());
-
-  for (let i = 1; i < TRIP_POINT_COUNT; i++) {
-    render(tripEventsList, new TripPointView(points[i]).getElement());
+  for (let i = 0; i < TRIP_POINT_COUNT; i++) {
+    renderPoint(tripEventsList, points[i]);
   }
 } else {
   render(tripEvents, new MessageCreatePointView().getElement());
