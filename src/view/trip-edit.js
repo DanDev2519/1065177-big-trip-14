@@ -7,8 +7,7 @@ const createTypeListMarkup = (list, type) => {
     : `<div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Event type</legend>
-        ${list.map((el) => `
-        <div class="event__type-item">
+        ${list.map((el) => `<div class="event__type-item">
           <input id="event-type-${el}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${el === type ? 'checked' : ''}>
           <label class="event__type-label  event__type-label--${el}" for="event-type-${el}-1">${upFirst(el)}</label>
         </div>`).join('')}
@@ -29,8 +28,7 @@ const createSectionOffersMarkup = (offerArr, optionsArr) => {
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-        ${offerArr.map(({name = '', cost}) => `
-          <div class="event__offer-selector">
+        ${offerArr.map(({name = '', cost}) => `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name.toLowerCase()}-1" type="checkbox" name="event-offer-luggage"  ${optionsArr.filter((opt) => opt.name == name)[0] ? 'checked' : ''}>
             <label class="event__offer-label" for="event-offer-luggage-1">
               <span class="event__offer-title">${name}</span>
@@ -47,8 +45,8 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     :`<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${descriptionInfo}</p>
-      ${imgArr.length == 0 ? '' : `
-      <div class="event__photos-container">
+      ${imgArr.length == 0 ? ''
+    : `<div class="event__photos-container">
         <div class="event__photos-tape">
           ${imgArr.map(({src, alt}) => `<img class="event__photo" src="${src}" alt="${alt}">`).join('')}
         </div>
