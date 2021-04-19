@@ -20,11 +20,11 @@ const offers = generateOfferList();
 const points = new Array(TRIP_POINT_COUNT).fill().map(() => {return generatePoint(offers);});
 const filters = generateFilter(points);
 
-const renderPoint = (pointListElement, point) => {
-  const destination = destinations.find((obj) => obj.name === point.destination);
-  const offerArr = offers.find((obj) => obj.type === point.type).offers;
+const renderPoint = (pointListElement, point, offersPoints, destinationsPoints) => {
+  const destinationPoint = destinationsPoints.find((obj) => obj.name === point.destination);
+  const offersPointArr = offersPoints.find((obj) => obj.type === point.type).offers;
   const pointComponent = new TripPointView(point);
-  const pointEditComponent = new TripEditPointView(point, offerArr, destination);
+  const pointEditComponent = new TripEditPointView(point, offersPointArr, destinationPoint);
 
   const switchPointToEdit = () => {
     pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
@@ -56,20 +56,20 @@ const renderPoint = (pointListElement, point) => {
   render(pointListElement, pointComponent.getElement());
 };
 
-const renderEvents = () => {
-  if (points.length) {
-    render(tripEvents, new TripSortView().getElement());
-    render(tripEvents, new TripEventsLisView().getElement());
+const renderEvents = (containerEvents, pointsEvent, offersEvent, destinationsEvent) => {
+  if (pointsEvent.length) {
+    render(containerEvents, new TripSortView().getElement());
+    render(containerEvents, new TripEventsLisView().getElement());
 
-    const tripEventsList = tripEvents.querySelector('.trip-events__list');
+    const tripEventsList = containerEvents.querySelector('.trip-events__list');
 
-    render(tripEventsList, new TripAddPointView(offers, destinations).getElement(), RenderPosition.AFTERBEGIN);
+    render(tripEventsList, new TripAddPointView(offersEvent, destinationsEvent).getElement(), RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < TRIP_POINT_COUNT; i++) {
-      renderPoint(tripEventsList, points[i]);
+      renderPoint(tripEventsList, pointsEvent[i], offersEvent, destinationsEvent);
     }
   } else {
-    render(tripEvents, new MessageCreatePointView().getElement());
+    render(containerEvents, new MessageCreatePointView().getElement());
   }
 };
 
@@ -84,5 +84,5 @@ render(tripControlsNavigation, new SiteMenuView().getElement());
 render(tripMain, new TripInfoView(points).getElement(), RenderPosition.AFTERBEGIN);
 render(tripControlsFilters, new FilterView(filters).getElement());
 
-renderEvents();
+renderEvents(tripEvents, points, offers, destinations);
 
