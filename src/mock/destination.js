@@ -1,5 +1,5 @@
-import {getRandomInteger} from './utils';
-import {CITIES_VISITED} from './const';
+import {getRandomInteger} from '../utils';
+import {CITIES_VISITED} from '../const';
 
 const generateDescription = () => {
   const sentenceArray = [

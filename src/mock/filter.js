@@ -1,4 +1,4 @@
-import {isTripPast, isTripFuture} from './utils.js';
+import {isTripPast, isTripFuture} from '../utils';
 
 const pointToFilterMap = {
   everything: (points) => points.length,

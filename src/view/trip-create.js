@@ -1,14 +1,13 @@
 import dayjs from 'dayjs';
-import {TRIP_TYPE, CITIES_VISITED} from '../mock/const';
-import {upFirst} from '../mock/utils';
+import {TRIP_TYPE, CITIES_VISITED} from '../const';
+import {upFirst, createElement} from '../utils';
 
 const createTypeListMarkup = (list, type) => {
-  return list.length == 0 ? '' : `
-    <div class="event__type-list">
+  return list.length == 0 ? ''
+    : `<div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Event type</legend>
-        ${list.map((el) => `
-        <div class="event__type-item">
+        ${list.map((el) => `<div class="event__type-item">
           <input id="event-type-${el}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${el === type ? 'checked' : ''}>
           <label class="event__type-label  event__type-label--${el}" for="event-type-${el}-1">${upFirst(el)}</label>
         </div>`).join('')}
@@ -17,20 +16,19 @@ const createTypeListMarkup = (list, type) => {
 };
 
 const createDestinationListMarkup = (list) => {
-  return list.length == 0 ? '' : `
-    <datalist id="destination-list-1">
+  return list.length == 0 ? ''
+    : `<datalist id="destination-list-1">
       ${list.map((el) => `<option value="${el}"></option>`).join('')}
     </datalist>`;
 };
 
 const createSectionOffersMarkup = (offerArr, optionsArr) => {
-  return offerArr.length == 0 ? '' : `
-    <section class="event__section  event__section--offers">
+  return offerArr.length == 0 ? ''
+    : `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-        ${offerArr.map(({name = '', cost}) => `
-          <div class="event__offer-selector">
+        ${offerArr.map(({name = '', cost}) => `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name.toLowerCase()}-1" type="checkbox" name="event-offer-luggage"  ${optionsArr.filter((opt) => opt.name == name)[0] ? 'checked' : ''}>
             <label class="event__offer-label" for="event-offer-luggage-1">
               <span class="event__offer-title">${name}</span>
@@ -43,12 +41,12 @@ const createSectionOffersMarkup = (offerArr, optionsArr) => {
 };
 
 const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
-  return descriptionInfo == '' ? '' :`
-    <section class="event__section  event__section--destination">
+  return descriptionInfo == '' ? ''
+    :`<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${descriptionInfo}</p>
-      ${imgArr.length == 0 ? '' : `
-      <div class="event__photos-container">
+      ${imgArr.length == 0 ? ''
+    : `<div class="event__photos-container">
         <div class="event__photos-tape">
           ${imgArr.map(({src, alt}) => `<img class="event__photo" src="${src}" alt="${alt}">`).join('')}
         </div>
@@ -66,8 +64,7 @@ const createTripAddMarkup = (offers, destinations) => {
     offer = offers.find((obj) => obj.type === type).offers,
     {description = '', img = []} = destinations.find((obj) => obj.name === destination);
 
-  return `
-    <li class="trip-events__item">
+  return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
@@ -112,8 +109,31 @@ const createTripAddMarkup = (offers, destinations) => {
           ${createSectionDestinationMarkup(description, img)}
         </section>
       </form>
-    </li>
-  `;
+    </li>`;
 };
 
-export {createTripAddMarkup};
+class TripAddPoint {
+  constructor(offers, destinations) {
+    this._offers = offers;
+    this._destinations = destinations;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripAddMarkup(this._offers, this._destinations);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default TripAddPoint;

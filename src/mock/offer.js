@@ -1,5 +1,5 @@
-import {getRandomInteger} from './utils';
-import {TRIP_TYPE} from './const';
+import {getRandomInteger} from '../utils';
+import {TRIP_TYPE} from '../const';
 
 const getRandomCost =  () => getRandomInteger(0, 300);
 
