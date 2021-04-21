@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {subtractDT, createElement} from '../utils';
+import {subtractDT} from '../utils';
+import AbstractView from './abstract';
 
 
 const createPointSelectedOffersMarkup = (options) => {
@@ -57,26 +58,14 @@ const createTripPointMarkup = (point) => {
   `;
 };
 
-class TripPoint {
+class TripPoint extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripPointMarkup(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

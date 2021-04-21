@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 const createSiteMenuMarkup = () => {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -8,25 +8,9 @@ const createSiteMenuMarkup = () => {
   `;
 };
 
-class SiteMenu {
-  constructor() {
-    this._element = null;
-  }
-
+class SiteMenu extends AbstractView {
   getTemplate() {
     return createSiteMenuMarkup();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
