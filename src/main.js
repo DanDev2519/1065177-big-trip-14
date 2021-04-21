@@ -11,7 +11,7 @@ import {generatePoint} from './mock/point';
 import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
-import {render, RenderPosition, replace, remove} from './utils/render';
+import {render, RenderPosition, replace} from './utils/render';
 
 const TRIP_POINT_COUNT = 15;
 
