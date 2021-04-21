@@ -11,7 +11,7 @@ import {generatePoint} from './mock/point';
 import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
-import {render, RenderPosition} from './utils';
+import {render, RenderPosition, replace, remove} from './utils/render';
 
 const TRIP_POINT_COUNT = 15;
 
@@ -27,11 +27,11 @@ const renderPoint = (pointListElement, point, offersPoints, destinationsPoints) 
   const pointEditComponent = new TripEditPointView(point, offersPointArr, destinationPoint);
 
   const switchPointToEdit = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   const switchPointToView = () => {
-    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -42,34 +42,33 @@ const renderPoint = (pointListElement, point, offersPoints, destinationsPoints) 
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHandler(() => {
     switchPointToEdit();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointEditComponent.setFormSubmitHandler(() => {
     switchPointToView();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(pointListElement, pointComponent.getElement());
+  render(pointListElement, pointComponent);
 };
 
 const renderEvents = (containerEvents, pointsEvent, offersEvent, destinationsEvent) => {
   if (pointsEvent.length) {
-    render(containerEvents, new TripSortView().getElement());
-    render(containerEvents, new TripEventsLisView().getElement());
+    render(containerEvents, new TripSortView());
+    render(containerEvents, new TripEventsLisView());
 
     const tripEventsList = containerEvents.querySelector('.trip-events__list');
 
-    render(tripEventsList, new TripAddPointView(offersEvent, destinationsEvent).getElement(), RenderPosition.AFTERBEGIN);
+    render(tripEventsList, new TripAddPointView(offersEvent, destinationsEvent), RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < TRIP_POINT_COUNT; i++) {
       renderPoint(tripEventsList, pointsEvent[i], offersEvent, destinationsEvent);
     }
   } else {
-    render(containerEvents, new MessageCreatePointView().getElement());
+    render(containerEvents, new MessageCreatePointView());
   }
 };
 
@@ -80,9 +79,9 @@ const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
 const pageMain = document.querySelector('.page-main');
 const tripEvents = pageMain.querySelector('.trip-events');
 
-render(tripControlsNavigation, new SiteMenuView().getElement());
-render(tripMain, new TripInfoView(points).getElement(), RenderPosition.AFTERBEGIN);
-render(tripControlsFilters, new FilterView(filters).getElement());
+render(tripControlsNavigation, new SiteMenuView());
+render(tripMain, new TripInfoView(points), RenderPosition.AFTERBEGIN);
+render(tripControlsFilters, new FilterView(filters));
 
 renderEvents(tripEvents, points, offers, destinations);
 

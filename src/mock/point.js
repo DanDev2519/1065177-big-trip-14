@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomInteger} from '../utils';
+import {getRandomInteger} from '../utils/common';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 
 const generateTypePoint = () => {

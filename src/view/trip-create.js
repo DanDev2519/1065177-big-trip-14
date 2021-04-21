@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
-import {upFirst} from '../utils';
+import {upFirst} from '../utils/common';
 import AbstractView from './abstract';
 
 const createTypeListMarkup = (list, type) => {
