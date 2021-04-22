@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
-import {upFirst, createElement} from '../utils';
+import {upFirst} from '../utils/common';
+import AbstractView from './abstract';
 
 const createTypeListMarkup = (list, type) => {
   return list.length == 0 ? ''
@@ -109,28 +110,28 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
     </li>`;
 };
 
-class TripEditPoint {
+class TripEditPoint extends AbstractView {
   constructor(point, offer, destination) {
+    super();
     this._point = point;
     this._offer = offer;
     this._destination = destination;
-    this._element = null;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createTripEditMarkup(this._point, this._offer, this._destination);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 }
 

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {subtractDT, createElement} from '../utils';
+import {subtractDT} from '../utils/trip';
+import AbstractView from './abstract';
 
 
 const createPointSelectedOffersMarkup = (options) => {
@@ -57,26 +58,25 @@ const createTripPointMarkup = (point) => {
   `;
 };
 
-class TripPoint {
+class TripPoint extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createTripPointMarkup(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
 

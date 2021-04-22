@@ -1,5 +1,6 @@
-import {sortObjByField, createElement} from '../utils';
+import {sortObjByField} from '../utils/common';
 import dayjs from 'dayjs';
+import AbstractView from './abstract';
 
 
 const tripNameMarkup = (objArr) => {
@@ -46,26 +47,14 @@ const createTripInfoMarkup = (points) => {
 };
 
 
-class TripInfo {
+class TripInfo extends AbstractView {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoMarkup(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
