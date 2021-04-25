@@ -12,6 +12,7 @@ import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
 import {render, RenderPosition, replace} from './utils/render';
+import TripPresenter from './presenter/trip';
 
 const TRIP_POINT_COUNT = 15;
 
@@ -20,57 +21,7 @@ const offers = generateOfferList();
 const points = new Array(TRIP_POINT_COUNT).fill().map(() => {return generatePoint(offers);});
 const filters = generateFilter(points);
 
-const renderPoint = (pointListElement, point, offersPoints, destinationsPoints) => {
-  const destinationPoint = destinationsPoints.find((obj) => obj.name === point.destination);
-  const offersPointArr = offersPoints.find((obj) => obj.type === point.type).offers;
-  const pointComponent = new TripPointView(point);
-  const pointEditComponent = new TripEditPointView(point, offersPointArr, destinationPoint);
-
-  const switchPointToEdit = () => {
-    replace(pointEditComponent, pointComponent);
-  };
-
-  const switchPointToView = () => {
-    replace(pointComponent, pointEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      switchPointToView();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-  };
-
-  pointComponent.setEditClickHandler(() => {
-    switchPointToEdit();
-    document.addEventListener('keydown', onEscKeyDown);
-  });
-
-  pointEditComponent.setFormSubmitHandler(() => {
-    switchPointToView();
-    document.removeEventListener('keydown', onEscKeyDown);
-  });
-
-  render(pointListElement, pointComponent);
-};
-
-const renderEvents = (containerEvents, pointsEvent, offersEvent, destinationsEvent) => {
-  if (pointsEvent.length) {
-    render(containerEvents, new TripSortView());
-    render(containerEvents, new TripEventsLisView());
-
-    const tripEventsList = containerEvents.querySelector('.trip-events__list');
-
-    render(tripEventsList, new TripAddPointView(offersEvent, destinationsEvent), RenderPosition.AFTERBEGIN);
-
-    for (let i = 0; i < TRIP_POINT_COUNT; i++) {
-      renderPoint(tripEventsList, pointsEvent[i], offersEvent, destinationsEvent);
-    }
-  } else {
-    render(containerEvents, new MessageCreatePointView());
-  }
-};
+// console.log(points.slice(), offers.slice(), destinations.slice());
 
 const pageHeader = document.querySelector('.page-header');
 const tripMain = pageHeader.querySelector('.trip-main');
@@ -83,5 +34,6 @@ render(tripControlsNavigation, new SiteMenuView());
 render(tripMain, new TripInfoView(points), RenderPosition.AFTERBEGIN);
 render(tripControlsFilters, new FilterView(filters));
 
-renderEvents(tripEvents, points, offers, destinations);
+const tripPresenter = new TripPresenter(tripEvents);
 
+tripPresenter.init(points, offers, destinations);
