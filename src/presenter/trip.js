@@ -1,14 +1,14 @@
 import TripSortView from '../view/trip-sort';
 import TripEventsLisView from '../view/trip-point-list';
-import TripPointView from '../view/trip-point';
-import TripEditPointView from '../view/trip-edit';
 import TripAddPointView from '../view/trip-create';
 import MessageCreatePointView from '../view/trip-message';
-import {render, RenderPosition, replace} from '../utils/render';
+import PointPresenter from './point';
+import {render, RenderPosition} from '../utils/render';
 
 class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
+    this._pointPresenter = {};
 
     this._sortComponent = new TripSortView();
     this._pointsListComponent = new TripEventsLisView();
@@ -28,38 +28,9 @@ class Trip {
   }
 
   _renderPoint(point) {
-    const destinationPoint = this._tripDestinations.find((obj) => obj.name === point.destination);
-    const offersPointArr = this._tripOffers.find((obj) => obj.type === point.type).offers;
-    const pointComponent = new TripPointView(point);
-    const pointEditComponent = new TripEditPointView(point, offersPointArr, destinationPoint);
-
-    const switchPointToEdit = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const switchPointToView = () => {
-      replace(pointComponent, pointEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        switchPointToView();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    pointComponent.setEditClickHandler(() => {
-      switchPointToEdit();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    pointEditComponent.setFormSubmitHandler(() => {
-      switchPointToView();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(this._pointsListContainer, pointComponent);
+    const pointPresenter = new PointPresenter(this._pointsListContainer);
+    pointPresenter.init(point, this._tripOffers, this._tripDestinations);
+    this._pointPresenter[point.id] = pointPresenter;
   }
 
   _renderPoints() {
@@ -70,6 +41,13 @@ class Trip {
     const pointAddComponent = new TripAddPointView(this._tripOffers, this._tripDestinations);
 
     render(this._pointsListContainer, pointAddComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _clearPointList() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
   }
 
   _renderPointsList() {
