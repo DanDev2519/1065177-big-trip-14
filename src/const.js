@@ -17,4 +17,11 @@ const CITIES_VISITED = [
   'Geneva',
 ];
 
-export { TRIP_TYPE, CITIES_VISITED};
+
+const SortType = {
+  DAY_DOWN: 'day-down',
+  PRICE_DOWN: 'price-down',
+  TIME_DOWN: 'Time-down',
+};
+
+export { TRIP_TYPE, CITIES_VISITED, SortType };

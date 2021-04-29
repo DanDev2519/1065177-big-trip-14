@@ -4,12 +4,15 @@ import TripAddPointView from '../view/trip-create';
 import MessageCreatePointView from '../view/trip-message';
 import PointPresenter from './point';
 import {render, RenderPosition} from '../utils/render';
-import {updateItem} from '../utils/common.js';
+import {updateItem} from '../utils/common';
+import {sortPointDayDown, sortPointTimeDown, sortPointPriceDown} from '../utils/trip';
+import {SortType} from '../const.js';
 
 class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
+    this._currentSortType = SortType.DAY_DOWN;
 
     this._sortComponent = new TripSortView();
     this._pointsListComponent = new TripEventsLisView();
@@ -17,12 +20,14 @@ class Trip {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(tripPoints, tripOffers, tripDestinations) {
-    this._tripPoints = tripPoints.slice();
+    this._tripPoints = tripPoints.slice().sort(sortPointDayDown);
     this._tripOffers = tripOffers.slice();
     this._tripDestinations = tripDestinations.slice();
+    this._sourcedTripPoints = tripPoints.slice().sort(sortPointDayDown);
 
     this._renderTrip();
   }
@@ -35,11 +40,38 @@ class Trip {
 
   _handlePointChange(updatedPoint) {
     this._tripPoints = updateItem(this._tripPoints, updatedPoint);
+    this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint, this._tripOffers, this._tripDestinations);
+  }
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.PRICE_DOWN:
+        this._tripPoints.sort(sortPointPriceDown);
+        break;
+      case SortType.TIME_DOWN:
+        this._tripPoints.sort(sortPointTimeDown);
+        break;
+      default:
+        this._tripPoints = this._sourcedTripPoints.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+    this._clearPointList();
+    this._renderPoints();
   }
 
   _renderSort() {
     render(this._tripContainer, this._sortComponent);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderPoint(point) {

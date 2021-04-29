@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {subtractDT} from '../utils/trip';
+import {subtractDT, setDifferenceHum} from '../utils/trip';
 import AbstractView from './abstract';
 
 
@@ -18,7 +18,7 @@ const createPointSelectedOffersMarkup = (options) => {
 const createTripPointMarkup = (point) => {
   const {type, dateIn, dateOut, destination, price, options, isFavorite} = point;
 
-  const duration = subtractDT(dateIn, dateOut);
+  const duration = setDifferenceHum(subtractDT(dateIn, dateOut));
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
