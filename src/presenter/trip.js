@@ -4,6 +4,7 @@ import TripAddPointView from '../view/trip-create';
 import MessageCreatePointView from '../view/trip-message';
 import PointPresenter from './point';
 import {render, RenderPosition} from '../utils/render';
+import {updateItem} from '../utils/common.js';
 
 class Trip {
   constructor(tripContainer) {
@@ -13,6 +14,9 @@ class Trip {
     this._sortComponent = new TripSortView();
     this._pointsListComponent = new TripEventsLisView();
     this._messageCreateComponent = new MessageCreatePointView();
+
+    this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(tripPoints, tripOffers, tripDestinations) {
@@ -23,12 +27,23 @@ class Trip {
     this._renderTrip();
   }
 
+  _handleModeChange() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._tripPoints = updateItem(this._tripPoints, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint, this._tripOffers, this._tripDestinations);
+  }
+
   _renderSort() {
     render(this._tripContainer, this._sortComponent);
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListContainer);
+    const pointPresenter = new PointPresenter(this._pointsListContainer, this._handlePointChange, this._handleModeChange);
     pointPresenter.init(point, this._tripOffers, this._tripDestinations);
     this._pointPresenter[point.id] = pointPresenter;
   }

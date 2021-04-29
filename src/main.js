@@ -1,17 +1,11 @@
 import SiteMenuView from './view/site-menu';
 import TripInfoView from './view/trip-info';
 import FilterView from './view/site-filters';
-import TripSortView from './view/trip-sort';
-import TripEventsLisView from './view/trip-point-list';
-import TripPointView from './view/trip-point';
-import TripEditPointView from './view/trip-edit';
-import TripAddPointView from './view/trip-create';
-import MessageCreatePointView from './view/trip-message';
 import {generatePoint} from './mock/point';
 import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
 import {generateFilter} from './mock/filter';
-import {render, RenderPosition, replace} from './utils/render';
+import {render, RenderPosition} from './utils/render';
 import TripPresenter from './presenter/trip';
 
 const TRIP_POINT_COUNT = 15;
