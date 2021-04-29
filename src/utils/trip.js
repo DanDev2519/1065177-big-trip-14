@@ -33,22 +33,7 @@ const isTripFuture = (dueDate) => {
 };
 
 const sortPointDayDown = (pointA, pointB) => {
-  const dayA = subtractDT(pointA.dateIn, pointA.dateOut).asMilliseconds();
-  const dayB = subtractDT(pointB.dateIn, pointB.dateOut).asMilliseconds();
-
   return dayjs(pointA.dateIn).diff(dayjs(pointB.dateIn));
-
-  // if (dayA === dayB) {
-  //   return 0;
-  // }
-
-  // if (dayA > dayB) {
-  //   return -1;
-  // }
-
-  // if (dayA < dayB) {
-  //   return 1;
-  // }
 };
 
 const sortPointTimeDown = (pointA, pointB) => {
