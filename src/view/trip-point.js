@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {subtractDT} from '../utils/trip';
+import {subtractDT, setDifferenceHum} from '../utils/trip';
 import AbstractView from './abstract';
 
 
@@ -18,7 +18,7 @@ const createPointSelectedOffersMarkup = (options) => {
 const createTripPointMarkup = (point) => {
   const {type, dateIn, dateOut, destination, price, options, isFavorite} = point;
 
-  const duration = subtractDT(dateIn, dateOut);
+  const duration = setDifferenceHum(subtractDT(dateIn, dateOut));
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -62,7 +62,9 @@ class TripPoint extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
+
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -74,9 +76,19 @@ class TripPoint extends AbstractView {
     this._callback.editClick();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
   }
 }
 

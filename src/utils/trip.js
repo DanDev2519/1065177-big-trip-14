@@ -8,6 +8,10 @@ const subtractDT = (start, end) => {
   const date1 = dayjs(end);
   const date2 = dayjs(start);
   const difference = dayjs.duration(date1.diff(date2));
+  return difference;
+};
+
+const setDifferenceHum = (difference) => {
   let diffHum;
   const diffAsHour = difference.asHours();
   if (diffAsHour < 1) {
@@ -28,8 +32,48 @@ const isTripFuture = (dueDate) => {
   return dayjs().isSameOrBefore(dueDate, 'D');
 };
 
+const sortPointDayDown = (pointA, pointB) => {
+  return dayjs(pointA.dateIn).diff(dayjs(pointB.dateIn));
+};
+
+const sortPointTimeDown = (pointA, pointB) => {
+  const timeA = subtractDT(pointA.dateIn, pointA.dateOut).asMilliseconds();
+  const timeB = subtractDT(pointB.dateIn, pointB.dateOut).asMilliseconds();
+  if (timeA === timeB) {
+    return 0;
+  }
+
+  if (timeA > timeB) {
+    return -1;
+  }
+
+  if (timeA < timeB) {
+    return 1;
+  }
+};
+
+const sortPointPriceDown = (pointA, pointB) => {
+  const priceA = pointA.price;
+  const priceB = pointB.price;
+  if (priceA === priceB) {
+    return 0;
+  }
+
+  if (priceA > priceB) {
+    return -1;
+  }
+
+  if (priceA < priceB) {
+    return 1;
+  }
+};
+
 export {
   subtractDT,
+  setDifferenceHum,
   isTripPast,
-  isTripFuture
+  isTripFuture,
+  sortPointDayDown,
+  sortPointTimeDown,
+  sortPointPriceDown
 };
