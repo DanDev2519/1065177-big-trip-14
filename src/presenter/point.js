@@ -31,7 +31,6 @@ class Point {
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    // __Оставить const или нужно сделать их приватными this._
     const destinationPoint = this._pointDestinations.find((obj) => obj.name === point.destination);
     const offersPointArr = this._pointOffers.find((obj) => obj.type === point.type).offers;
     this._pointComponent = new TripPointView(this._point);

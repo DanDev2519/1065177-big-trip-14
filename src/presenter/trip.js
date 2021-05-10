@@ -27,7 +27,7 @@ class Trip {
     this._tripPoints = tripPoints.slice().sort(sortPointDayDown);
     this._tripOffers = tripOffers.slice();
     this._tripDestinations = tripDestinations.slice();
-    this._sourcedTripPoints = tripPoints.slice().sort(sortPointDayDown);
+    this._sourcedTripPoints = this._tripPoints.slice();
 
     this._renderTrip();
   }
@@ -111,7 +111,7 @@ class Trip {
     if (this._tripPoints.length) {
       this._renderSort();
       this._renderPointsList();
-      this._renderPointAdd();
+      // this._renderPointAdd();
       this._renderPoints();
     } else {
       this.__renderMessageCreate();
