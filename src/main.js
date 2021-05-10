@@ -15,7 +15,8 @@ const offers = generateOfferList();
 const points = new Array(TRIP_POINT_COUNT).fill().map(() => {return generatePoint(offers);});
 const filters = generateFilter(points);
 
-// console.log(points.slice(), offers.slice(), destinations.slice());
+console.log(points.slice(), offers.slice(), destinations.slice());
+window.__points = points;
 
 const pageHeader = document.querySelector('.page-header');
 const tripMain = pageHeader.querySelector('.trip-main');

@@ -113,25 +113,114 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
 class TripEditPoint extends AbstractView {
   constructor(point, offer, destination) {
     super();
-    this._point = point;
+    this._pointData = TripEditPoint.parsePointToData(point);
     this._offer = offer;
     this._destination = destination;
 
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createTripEditMarkup(this._point, this._offer, this._destination);
+    return createTripEditMarkup(this._pointData, this._offer, this._destination);
+  }
+
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
+
+    this._pointData = Object.assign(
+      {},
+      this._pointData,
+      update,
+    );
+
+    if (justDataUpdating) {
+      return;
+    }
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-list')
+      .addEventListener('change', this._eventTypeChangeHandler);
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this._destinationInputHandler);
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('input', this._priceInputHandler);
+  }
+
+  _eventTypeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+
+  _destinationInputHandler(evt) {
+    evt.preventDefault();
+    // _Правильная ли проверка
+    if (CITIES_VISITED.includes(evt.target.value)) {
+      this.updateData({
+        destination: evt.target.value,
+      }, true);
+    }
+  }
+
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value,
+    }, true);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(TripEditPoint.parseDataToPoint(this._pointData));
   }
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+
+    return data;
   }
 }
 
