@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
-import AbstractView from './abstract';
+import SmartView from './smart.js';
 
 const createTypeListMarkup = (list, type) => {
   return list.length == 0 ? ''
@@ -110,7 +110,7 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
     </li>`;
 };
 
-class TripEditPoint extends AbstractView {
+class TripEditPoint extends SmartView {
   constructor(point, offer, destination) {
     super();
     this._pointData = TripEditPoint.parsePointToData(point);
@@ -120,48 +120,26 @@ class TripEditPoint extends AbstractView {
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
     this._setInnerHandlers();
+  }
+
+  reset(point) {
+    this.updateData(
+      TripEditPoint.parsePointToData(point),
+    );
   }
 
   getTemplate() {
     return createTripEditMarkup(this._pointData, this._offer, this._destination);
   }
 
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._pointData = Object.assign(
-      {},
-      this._pointData,
-      update,
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
-  }
-
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
   }
 
   _setInnerHandlers() {
@@ -200,9 +178,19 @@ class TripEditPoint extends AbstractView {
     }, true);
   }
 
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(TripEditPoint.parseDataToPoint(this._pointData));
+  }
+
+  setFormResetHandler(callback) {
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formResetHandler);
   }
 
   setFormSubmitHandler(callback) {

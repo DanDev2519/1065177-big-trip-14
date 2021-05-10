@@ -20,6 +20,7 @@ class Point {
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handlerFavoriteClick = this._handlerFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleFormReset = this._handleFormReset.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
@@ -39,6 +40,7 @@ class Point {
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handlerFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditComponent.setFormResetHandler(this._handleFormReset);
 
     if (prevPointComponent == null || prevPointEditComponent == null) {
       render(this._pointsListContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -84,6 +86,7 @@ class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._point);
       this._switchPointToView();
     }
   }
@@ -106,6 +109,11 @@ class Point {
 
   _handleFormSubmit(point) {
     this._changeData(point);
+    this._switchPointToView();
+  }
+
+  _handleFormReset() {
+    this._pointEditComponent.reset(this._point);
     this._switchPointToView();
   }
 }
