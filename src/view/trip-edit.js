@@ -30,7 +30,7 @@ const createSectionOffersMarkup = (offerArr, optionsArr) => {
 
       <div class="event__available-offers">
         ${offerArr.map(({name = '', cost}, i) => `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name.toLowerCase()}-${i}" type="checkbox" name="event-offer-luggage"  ${optionsArr.filter((opt) => opt.name == name)[0] ? 'checked' : ''}>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name.toLowerCase()}-${i}" type="checkbox" name="event-offer-${name.toLowerCase()}-${i}"  ${optionsArr.filter((opt) => opt.name == name)[0] ? 'checked' : ''}>
             <label class="event__offer-label" for="event-offer-${name.toLowerCase()}-${i}">
               <span class="event__offer-title">${name}</span>
               &plus;&euro;&nbsp;
