@@ -2,6 +2,9 @@ import dayjs from 'dayjs';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypeListMarkup = (list, type) => {
   return list.length == 0 ? ''
@@ -116,13 +119,18 @@ class TripEditPoint extends SmartView {
     this._pointData = TripEditPoint.parsePointToData(point);
     this._offer = offer;
     this._destination = destination;
+    this._datepicher = null;
 
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
+    this._setStartDatepicker();
+    this._setEndDatepicker();
     this._setInnerHandlers();
   }
 
@@ -137,9 +145,45 @@ class TripEditPoint extends SmartView {
   }
 
   restoreHandlers() {
+    this._setStartDatepicker();
+    this._setEndDatepicker();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
+  }
+
+  _setStartDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._pointData.dateIn,
+        onChange: this._startDateChangeHandler,
+      },
+    );
+  }
+
+  _setEndDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._pointData.dateOut,
+        onChange: this._endDateChangeHandler,
+      },
+    );
   }
 
   _setInnerHandlers() {
@@ -176,6 +220,18 @@ class TripEditPoint extends SmartView {
     this.updateData({
       price: evt.target.value,
     }, true);
+  }
+
+  _startDateChangeHandler([userDate]) {
+    this.updateData({
+      dateIn: userDate,
+    });
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData({
+      dateOut: userDate,
+    });
   }
 
   _formResetHandler(evt) {
