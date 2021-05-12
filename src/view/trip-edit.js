@@ -119,7 +119,7 @@ class TripEditPoint extends SmartView {
     this._pointData = TripEditPoint.parsePointToData(point);
     this._offer = offer;
     this._destination = destination;
-    this._datepicher = null;
+    this._datepicker = null;
 
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
