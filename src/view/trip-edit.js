@@ -119,7 +119,9 @@ class TripEditPoint extends SmartView {
     this._pointData = TripEditPoint.parsePointToData(point);
     this._offer = offer;
     this._destination = destination;
-    this._datepicker = null;
+
+    this._startDatepicker = null;
+    this._endDatepicker = null;
 
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
@@ -153,34 +155,34 @@ class TripEditPoint extends SmartView {
   }
 
   _setStartDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
     }
 
-    this._datepicker = flatpickr(
+    this._startDatepicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._pointData.dateIn,
+        defaultDate: dayjs(this._pointData.dateIn).format('DD/MM/YY HH:mm'),
         onChange: this._startDateChangeHandler,
       },
     );
   }
 
   _setEndDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
     }
 
-    this._datepicker = flatpickr(
+    this._endDatepicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._pointData.dateOut,
+        defaultDate: dayjs(this._pointData.dateOut).format('DD/MM/YY HH:mm'),
         onChange: this._endDateChangeHandler,
       },
     );
