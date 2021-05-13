@@ -131,8 +131,8 @@ class TripEditPoint extends SmartView {
     this._formResetHandler = this._formResetHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
-    this._setStartDatepicker();
-    this._setEndDatepicker();
+    // this._setStartDatepicker();
+    // this._setEndDatepicker();
     this._setInnerHandlers();
   }
 
@@ -147,18 +147,19 @@ class TripEditPoint extends SmartView {
   }
 
   restoreHandlers() {
-    this._setStartDatepicker();
-    this._setEndDatepicker();
+    // this._setStartDatepicker();
+    // this._setEndDatepicker();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
   }
 
-  _setStartDatepicker() {
-    if (this._startDatepicker) {
-      this._startDatepicker.destroy();
-      this._startDatepicker = null;
-    }
+  setStartDatepicker() {
+    // if (this._startDatepicker) {
+    //   this._startDatepicker.destroy();
+    //   this._startDatepicker = null;
+    // }
+    this.removerStartDatepicker();
 
     this._startDatepicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
@@ -171,11 +172,19 @@ class TripEditPoint extends SmartView {
     );
   }
 
-  _setEndDatepicker() {
-    if (this._endDatepicker) {
-      this._endDatepicker.destroy();
-      this._endDatepicker = null;
+  removerStartDatepicker() {
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
     }
+  }
+
+  setEndDatepicker() {
+    // if (this._endDatepicker) {
+    //   this._endDatepicker.destroy();
+    //   this._endDatepicker = null;
+    // }
+    this.removerEndDatepicker();
 
     this._endDatepicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
@@ -186,6 +195,13 @@ class TripEditPoint extends SmartView {
         onChange: this._endDateChangeHandler,
       },
     );
+  }
+
+  removerEndDatepicker() {
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
   }
 
   _setInnerHandlers() {

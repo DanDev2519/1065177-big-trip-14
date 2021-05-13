@@ -8,7 +8,7 @@ import {generateFilter} from './mock/filter';
 import {render, RenderPosition} from './utils/render';
 import TripPresenter from './presenter/trip';
 
-const TRIP_POINT_COUNT = 15;
+const TRIP_POINT_COUNT = 2;
 
 const destinations = generateDestination();
 const offers = generateOfferList();
