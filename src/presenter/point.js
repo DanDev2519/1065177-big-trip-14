@@ -60,8 +60,7 @@ class Point {
   }
 
   destroy() {
-    this._pointEditComponent.removerStartDatepicker();
-    this._pointEditComponent.removerEndDatepicker();
+    this._pointEditComponent.removerDatepicker();
 
     remove(this._pointComponent);
     remove(this._pointEditComponent);
@@ -74,8 +73,7 @@ class Point {
   }
 
   _switchPointToEdit() {
-    this._pointEditComponent.setStartDatepicker();
-    this._pointEditComponent.setEndDatepicker();
+    this._pointEditComponent.setDatepicker();
 
     replace(this._pointEditComponent, this._pointComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
@@ -84,8 +82,7 @@ class Point {
   }
 
   _switchPointToView() {
-    this._pointEditComponent.removerStartDatepicker();
-    this._pointEditComponent.removerEndDatepicker();
+    this._pointEditComponent.removerDatepicker();
 
     replace(this._pointComponent, this._pointEditComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
