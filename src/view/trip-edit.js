@@ -156,6 +156,7 @@ class TripEditPoint extends SmartView {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
+    this.setPointEditChangeHandler(this._callback.pointEditChange);
   }
 
   _setStartDatepicker() {
@@ -212,12 +213,12 @@ class TripEditPoint extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement()
-      .querySelector('.event__type-list')
-      .addEventListener('change', this._eventTypeChangeHandler);
-    this.getElement()
-      .querySelector('.event__input--destination')
-      .addEventListener('input', this._destinationInputHandler);
+    // this.getElement()
+    //   .querySelector('.event__type-list')
+    //   .addEventListener('change', this._eventTypeChangeHandler);
+    // this.getElement()
+    //   .querySelector('.event__input--destination')
+    //   .addEventListener('input', this._destinationInputHandler);
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('input', this._priceInputHandler);
@@ -233,6 +234,7 @@ class TripEditPoint extends SmartView {
     this.updateData({
       type: evt.target.value,
     });
+    this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
   }
 
   _destinationInputHandler(evt) {
@@ -242,6 +244,7 @@ class TripEditPoint extends SmartView {
       this.updateData({
         destination: evt.target.value,
       }, true);
+      this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
     }
   }
 
@@ -303,6 +306,16 @@ class TripEditPoint extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setPointEditChangeHandler(callback) {
+    this._callback.pointEditChange = callback;
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationInputHandler);
+    this.getElement()
+      .querySelector('.event__type-list')
+      .addEventListener('change', this._eventTypeChangeHandler);
   }
 
   static parsePointToData(point) {
