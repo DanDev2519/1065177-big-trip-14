@@ -96,8 +96,6 @@ class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      // this._pointEditComponent.reset(this._point);
-      // this._switchPointToView();
       this._handleFormReset();
     }
   }
@@ -131,8 +129,6 @@ class Point {
 
   _handleFormReset() {
     this._reset();
-    // this._pointEditComponent.reset(this._point);
-    // this._switchPointToView();
   }
 }
 

@@ -10,7 +10,6 @@ const INITIAL_POINT = {
   type: TRIP_TYPE[0],
   dateIn: dayjs().hour(0).minute(0).format('YYYY-MM-DDTHH:mm'),
   dateOut: dayjs().hour(0).minute(0).format('YYYY-MM-DDTHH:mm'),
-  // destination: CITIES_VISITED[0],
   destination: '',
   price: '',
   options: [],
@@ -75,21 +74,9 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     </section>`;
 };
 
-// const createTripAddMarkup = (offers, destinations) => {
 const createTripAddMarkup = (point, offer, destinationInfo) => {
   const {type, dateIn, dateOut, destination, price, options} = point;
   const {description = '', img = []} = destinationInfo;
-
-  // const type = TRIP_TYPE[0],
-  //   dateIn = dayjs().hour(0).minute(0).format('DD/MM/YY HH:mm'),
-  //   dateOut = dayjs().hour(0).minute(0).format('DD/MM/YY HH:mm'),
-  //   destination = CITIES_VISITED[0],
-  //   // destination = '',
-  //   price = '',
-  //   options = [],
-  //   offer = offers.find((obj) => obj.type === type).offers,
-  //   // _ Как-то нужно отсекать undefined от find
-  //   {description = '', img = []} = destinations.find((obj) => obj.name === destination);
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -147,9 +134,6 @@ class TripAddPoint extends SmartView {
     this._offers = offers.slice();
     this._destinations = destinations.slice();
 
-    // this._currentOffer = this._getCurrentOffers();
-    // this._currentDestination = this._getCurrentDestination();
-
     this._startDatepicker = null;
     this._endDatepicker = null;
 
@@ -166,8 +150,6 @@ class TripAddPoint extends SmartView {
   }
 
   getTemplate() {
-    // return createTripAddMarkup(this._offers, this._destinations);
-    // return createTripAddMarkup(this._pointData, this._currentOffer, this._currentDestination);
     return createTripAddMarkup(this._pointData, this._getCurrentOffers(), this._getCurrentDestination());
   }
 
@@ -279,6 +261,7 @@ class TripAddPoint extends SmartView {
 
   _priceInputHandler(evt) {
     evt.preventDefault();
+    // _Правильная ли проверка
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
       return;
