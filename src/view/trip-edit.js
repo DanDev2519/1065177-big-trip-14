@@ -138,15 +138,14 @@ class TripEditPoint extends SmartView {
     this._formResetHandler = this._formResetHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
-
     this._setInnerHandlers();
   }
 
-  reset(point) {
-    this.updateData(
-      TripEditPoint.parsePointToData(point),
-    );
-  }
+  // reset(point) {
+  //   this.updateData(
+  //     TripEditPoint.parsePointToData(point),
+  //   );
+  // }
 
   getTemplate() {
     return createTripEditMarkup(this._pointData, this._offer, this._destination);
@@ -213,12 +212,6 @@ class TripEditPoint extends SmartView {
   }
 
   _setInnerHandlers() {
-    // this.getElement()
-    //   .querySelector('.event__type-list')
-    //   .addEventListener('change', this._eventTypeChangeHandler);
-    // this.getElement()
-    //   .querySelector('.event__input--destination')
-    //   .addEventListener('input', this._destinationInputHandler);
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('input', this._priceInputHandler);
@@ -244,7 +237,7 @@ class TripEditPoint extends SmartView {
     if (CITIES_VISITED.includes(evt.target.value)) {
       this.updateData({
         destination: evt.target.value,
-      }, true);
+      });
       this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
     }
   }

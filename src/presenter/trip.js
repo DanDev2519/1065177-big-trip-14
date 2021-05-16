@@ -91,9 +91,10 @@ class Trip {
   }
 
   _renderPointAdd() {
-    const pointAddComponent = new TripAddPointView(this._tripOffers, this._tripDestinations);
+    this._pointAddComponent = new TripAddPointView(this._tripOffers, this._tripDestinations);
+    this._pointAddComponent.setDatepicker();
 
-    render(this._pointsListContainer, pointAddComponent, RenderPosition.AFTERBEGIN);
+    render(this._pointsListContainer, this._pointAddComponent, RenderPosition.AFTERBEGIN);
   }
 
   _clearPointList() {
@@ -117,7 +118,7 @@ class Trip {
     if (this._tripPoints.length) {
       this._renderSort();
       this._renderPointsList();
-      // this._renderPointAdd();
+      this._renderPointAdd();
       this._renderPoints();
     } else {
       this.__renderMessageCreate();
