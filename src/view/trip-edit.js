@@ -156,6 +156,7 @@ class TripEditPoint extends SmartView {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setPointEditChangeHandler(this._callback.pointEditChange);
+    this.setDatepicker();
   }
 
   _setStartDatepicker() {
