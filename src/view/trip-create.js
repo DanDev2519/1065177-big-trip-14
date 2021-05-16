@@ -277,6 +277,9 @@ class TripAddPoint extends SmartView {
 
   _priceInputHandler(evt) {
     evt.preventDefault();
+    if (!Number.isInteger(+evt.target.value)) {
+      evt.target.value = this._pointData.price;
+    }
     this.updateData({
       price: evt.target.value,
     }, true);
