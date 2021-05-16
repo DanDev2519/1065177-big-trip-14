@@ -166,6 +166,7 @@ class TripEditPoint extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
+        maxDate: dayjs(this._pointData.dateOut).format('DD/MM/YY HH:mm'),
         defaultDate: dayjs(this._pointData.dateIn).format('DD/MM/YY HH:mm'),
         onChange: this._startDateChangeHandler,
       },
@@ -188,6 +189,7 @@ class TripEditPoint extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
+        minDate: dayjs(this._pointData.dateIn).format('DD/MM/YY HH:mm'),
         defaultDate: dayjs(this._pointData.dateOut).format('DD/MM/YY HH:mm'),
         onChange: this._endDateChangeHandler,
       },
@@ -246,6 +248,7 @@ class TripEditPoint extends SmartView {
     evt.preventDefault();
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
+      return;
     }
     this.updateData({
       price: evt.target.value,

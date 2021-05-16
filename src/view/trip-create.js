@@ -162,7 +162,7 @@ class TripAddPoint extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
     this._setInnerHandlers();
-
+    this.setDatepicker();
   }
 
   getTemplate() {
@@ -171,10 +171,10 @@ class TripAddPoint extends SmartView {
     return createTripAddMarkup(this._pointData, this._getCurrentOffers(), this._getCurrentDestination());
   }
 
-  // _Не знаю, понадобится ли этот метод или нет
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDatepicker();
   }
 
   _getCurrentOffers() {
@@ -196,6 +196,7 @@ class TripAddPoint extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
+        maxDate: dayjs(this._pointData.dateOut).format('DD/MM/YY HH:mm'),
         defaultDate: dayjs(this._pointData.dateIn).format('DD/MM/YY HH:mm'),
         onChange: this._startDateChangeHandler,
       },
@@ -217,6 +218,7 @@ class TripAddPoint extends SmartView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
+        minDate: dayjs(this._pointData.dateIn).format('DD/MM/YY HH:mm'),
         defaultDate: dayjs(this._pointData.dateOut).format('DD/MM/YY HH:mm'),
         onChange: this._endDateChangeHandler,
       },
@@ -279,6 +281,7 @@ class TripAddPoint extends SmartView {
     evt.preventDefault();
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
+      return;
     }
     this.updateData({
       price: evt.target.value,

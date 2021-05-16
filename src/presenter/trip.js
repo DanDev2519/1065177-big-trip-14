@@ -92,7 +92,6 @@ class Trip {
 
   _renderPointAdd() {
     this._pointAddComponent = new TripAddPointView(this._tripOffers, this._tripDestinations);
-    this._pointAddComponent.setDatepicker();
 
     render(this._pointsListContainer, this._pointAddComponent, RenderPosition.AFTERBEGIN);
   }
