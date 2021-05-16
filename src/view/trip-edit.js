@@ -233,6 +233,7 @@ class TripEditPoint extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
+      options: [],
     });
     this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
   }

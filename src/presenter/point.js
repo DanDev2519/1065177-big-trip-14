@@ -8,10 +8,11 @@ const Mode = {
 };
 
 class Point {
-  constructor(pointsListContainer, changeData, changeMode) {
+  constructor(pointsListContainer, changeData, changeMode, reset) {
     this._pointsListContainer = pointsListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._reset = reset;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -22,7 +23,6 @@ class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormReset = this._handleFormReset.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-
     this._handlerPointEditChange = this._handlerPointEditChange.bind(this);
   }
 
@@ -34,17 +34,17 @@ class Point {
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    // const destinationPoint = this._pointDestinations.find((obj) => obj.name === this._point.destination);
-    // const offersPointArr = this._pointOffers.find((obj) => obj.type === this._point.type).offers;
-    // this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint);
-    this._getPointEditComponent(this._point);
+    const destinationPoint = this._pointDestinations.find((obj) => obj.name === this._point.destination);
+    const offersPointArr = this._pointOffers.find((obj) => obj.type === this._point.type).offers;
+    this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint);
 
     this._pointComponent = new TripPointView(this._point);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handlerFavoriteClick);
-    // this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    // this._pointEditComponent.setFormResetHandler(this._handleFormReset);
+    this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditComponent.setFormResetHandler(this._handleFormReset);
+    this._pointEditComponent.setPointEditChangeHandler(this._handlerPointEditChange);
 
     if (prevPointComponent == null || prevPointEditComponent == null) {
       render(this._pointsListContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -76,21 +76,6 @@ class Point {
     }
   }
 
-  _getPointEditComponent(point) {
-    if (this._pointEditComponent) {
-      this._pointEditComponent.updateElement();
-    }
-
-    const destinationPoint = this._pointDestinations.find((obj) => obj.name === point.destination);
-    const offersPointArr = this._pointOffers.find((obj) => obj.type === point.type).offers;
-    this._pointEditComponent = new TripEditPointView(point, offersPointArr, destinationPoint);
-
-    this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._pointEditComponent.setFormResetHandler(this._handleFormReset);
-
-    this._pointEditComponent.setPointEditChangeHandler(this._handlerPointEditChange);
-  }
-
   _switchPointToEdit() {
     this._pointEditComponent.setDatepicker();
 
@@ -111,13 +96,16 @@ class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this._pointEditComponent.reset(this._point);
-      this._switchPointToView();
+      // this._pointEditComponent.reset(this._point);
+      // this._switchPointToView();
+      this._handleFormReset();
     }
   }
 
   _handlerPointEditChange(point) {
-    this._getPointEditComponent(point);
+    this._pointEditComponent.removerDatepicker();
+    this.init(point, this._pointOffers, this._pointDestinations);
+    this._pointEditComponent.setDatepicker();
   }
 
   _handleEditClick() {
@@ -142,8 +130,9 @@ class Point {
   }
 
   _handleFormReset() {
-    this._pointEditComponent.reset(this._point);
-    this._switchPointToView();
+    this._reset();
+    // this._pointEditComponent.reset(this._point);
+    // this._switchPointToView();
   }
 }
 
