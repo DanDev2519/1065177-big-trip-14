@@ -268,7 +268,7 @@ class TripAddPoint extends SmartView {
   _destinationInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
-    if (CITIES_VISITED.includes(evt.target.value)) {
+    if (CITIES_VISITED.includes(evt.target.value) || evt.target.value === '') {
       this.updateData({
         destination: evt.target.value,
       });
