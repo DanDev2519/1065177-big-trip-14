@@ -249,6 +249,7 @@ class TripEditPoint extends SmartView {
 
   _priceInputHandler(evt) {
     evt.preventDefault();
+    // _Правильная ли проверка
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
       return;
@@ -258,7 +259,6 @@ class TripEditPoint extends SmartView {
     }, true);
   }
 
-  // _Надо ли перерисовывать компоненту?
   _offersChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
