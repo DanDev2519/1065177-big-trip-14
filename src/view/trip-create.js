@@ -164,10 +164,7 @@ class TripAddPoint extends SmartView {
   }
 
   _getCurrentDestination() {
-    // _Как-то может еще можно избежать undefined от find
-    // это не единственное место использования функции find
     const currentDestination = this._destinations.find((obj) => obj.name === this._pointData.destination);
-    // return currentDestination ? currentDestination : {};
     return currentDestination || {};
   }
 
