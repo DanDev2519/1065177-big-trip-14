@@ -50,7 +50,7 @@ const createTripInfoMarkup = (points) => {
 class TripInfo extends AbstractView {
   constructor(points) {
     super();
-    this._points = points;
+    this._points = points.slice();
   }
 
   getTemplate() {

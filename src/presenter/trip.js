@@ -9,8 +9,11 @@ import {sortPointDayDown, sortPointTimeDown, sortPointPriceDown} from '../utils/
 import {SortType} from '../const.js';
 
 class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel, offersModel, destinationsModel) {
     this._tripContainer = tripContainer;
+    this._pointsModel = pointsModel;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY_DOWN;
 
@@ -31,6 +34,18 @@ class Trip {
     this._sourcedTripPoints = this._tripPoints.slice();
 
     this._renderTrip();
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
+  }
+
+  _getOffers() {
+    return this._offersModel.getOffers();
+  }
+
+  _getDestinations() {
+    return this._destinationsModel.getDestinations();
   }
 
   _handleModeChange() {
