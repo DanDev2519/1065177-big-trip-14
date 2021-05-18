@@ -21,13 +21,14 @@ class Trip {
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handlerPointReset = this._handlerPointReset.bind(this);
   }
 
   init(tripPoints, tripOffers, tripDestinations) {
     this._tripPoints = tripPoints.slice().sort(sortPointDayDown);
     this._tripOffers = tripOffers.slice();
     this._tripDestinations = tripDestinations.slice();
-    this._sourcedTripPoints = tripPoints.slice().sort(sortPointDayDown);
+    this._sourcedTripPoints = this._tripPoints.slice();
 
     this._renderTrip();
   }
@@ -42,6 +43,11 @@ class Trip {
     this._tripPoints = updateItem(this._tripPoints, updatedPoint);
     this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint, this._tripOffers, this._tripDestinations);
+  }
+
+  _handlerPointReset() {
+    this._clearPointList();
+    this._renderPoints();
   }
 
   _sortPoints(sortType) {
@@ -75,7 +81,7 @@ class Trip {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListContainer, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._pointsListContainer, this._handlePointChange, this._handleModeChange, this._handlerPointReset);
     pointPresenter.init(point, this._tripOffers, this._tripDestinations);
     this._pointPresenter[point.id] = pointPresenter;
   }
@@ -85,9 +91,9 @@ class Trip {
   }
 
   _renderPointAdd() {
-    const pointAddComponent = new TripAddPointView(this._tripOffers, this._tripDestinations);
+    this._pointAddComponent = new TripAddPointView(this._tripOffers, this._tripDestinations);
 
-    render(this._pointsListContainer, pointAddComponent, RenderPosition.AFTERBEGIN);
+    render(this._pointsListContainer, this._pointAddComponent, RenderPosition.AFTERBEGIN);
   }
 
   _clearPointList() {

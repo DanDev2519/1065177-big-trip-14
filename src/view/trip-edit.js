@@ -1,7 +1,10 @@
 import dayjs from 'dayjs';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
-import AbstractView from './abstract';
+import SmartView from './smart.js';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypeListMarkup = (list, type) => {
   return list.length == 0 ? ''
@@ -29,9 +32,15 @@ const createSectionOffersMarkup = (offerArr, optionsArr) => {
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-        ${offerArr.map(({name = '', cost}) => `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name.toLowerCase()}-1" type="checkbox" name="event-offer-luggage"  ${optionsArr.filter((opt) => opt.name == name)[0] ? 'checked' : ''}>
-            <label class="event__offer-label" for="event-offer-luggage-1">
+        ${offerArr.map(({name = '', cost}, i) => `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden"
+              id="event-offer-${name.toLowerCase()}-${i}"
+              type="checkbox"
+              data-name="${name}"
+              data-cost="${cost}"
+              name="event-offer-${name.toLowerCase()}-${i}"
+              ${optionsArr.filter((obj) => obj.name === name && obj.cost === cost)[0] ? 'checked' : ''}>
+            <label class="event__offer-label" for="event-offer-${name.toLowerCase()}-${i}">
               <span class="event__offer-title">${name}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${cost}</span>
@@ -110,28 +119,220 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
     </li>`;
 };
 
-class TripEditPoint extends AbstractView {
+class TripEditPoint extends SmartView {
   constructor(point, offer, destination) {
     super();
-    this._point = point;
+    this._pointData = TripEditPoint.parsePointToData(point);
     this._offer = offer;
     this._destination = destination;
 
+    this._startDatepicker = null;
+    this._endDatepicker = null;
+
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
+    this._offersChangeHandler = this._offersChangeHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
+  // reset(point) {
+  //   this.updateData(
+  //     TripEditPoint.parsePointToData(point),
+  //   );
+  // }
+
   getTemplate() {
-    return createTripEditMarkup(this._point, this._offer, this._destination);
+    return createTripEditMarkup(this._pointData, this._offer, this._destination);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
+    this.setPointEditChangeHandler(this._callback.pointEditChange);
+    this.setDatepicker();
+  }
+
+  _setStartDatepicker() {
+    this._removerStartDatepicker();
+
+    this._startDatepicker = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        maxDate: dayjs(this._pointData.dateOut).format('DD/MM/YY HH:mm'),
+        defaultDate: dayjs(this._pointData.dateIn).format('DD/MM/YY HH:mm'),
+        onChange: this._startDateChangeHandler,
+      },
+    );
+  }
+
+  _removerStartDatepicker() {
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
+    }
+  }
+
+  _setEndDatepicker() {
+
+    this._removerEndDatepicker();
+
+    this._endDatepicker = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        minDate: dayjs(this._pointData.dateIn).format('DD/MM/YY HH:mm'),
+        defaultDate: dayjs(this._pointData.dateOut).format('DD/MM/YY HH:mm'),
+        onChange: this._endDateChangeHandler,
+      },
+    );
+  }
+
+  _removerEndDatepicker() {
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
+  }
+
+  setDatepicker() {
+    this._setStartDatepicker();
+    this._setEndDatepicker();
+  }
+
+  removerDatepicker() {
+    this._removerStartDatepicker();
+    this._removerEndDatepicker();
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('input', this._priceInputHandler);
+    this.getElement()
+      .querySelector('.event__available-offers')
+      && this.getElement()
+        .querySelector('.event__available-offers')
+        .addEventListener('change', this._offersChangeHandler);
+  }
+
+  _eventTypeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+      options: [],
+    });
+    this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
+  }
+
+  _destinationInputHandler(evt) {
+    evt.preventDefault();
+    // _Правильная ли проверка
+    if (!CITIES_VISITED.includes(evt.target.value)) {
+      evt.target.value = this._pointData.destination;
+      return;
+    }
+    this.updateData({
+      destination: evt.target.value,
+    });
+    this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
+  }
+
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+    // _Правильная ли проверка
+    if (!Number.isInteger(+evt.target.value)) {
+      evt.target.value = this._pointData.price;
+      return;
+    }
+    this.updateData({
+      price: evt.target.value,
+    }, true);
+  }
+
+  _offersChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      options: this._changeOffers(evt.target.dataset.name, +evt.target.dataset.cost),
+    }, true);
+  }
+
+  _changeOffers(name, cost) {
+    let newArr = this._pointData.options;
+    const isContain = newArr.some((el) => el.name === name && el.cost === cost);
+
+    if(isContain) {
+      newArr = newArr.filter((el) => !(el.name === name && el.cost === cost));
+    } else {
+      newArr.push({name:name, cost:cost});
+    }
+
+    return newArr;
+  }
+
+  _startDateChangeHandler([userDate]) {
+    this.updateData({
+      dateIn: userDate,
+    });
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData({
+      dateOut: userDate,
+    });
+  }
+
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(TripEditPoint.parseDataToPoint(this._pointData));
+  }
+
+  setFormResetHandler(callback) {
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formResetHandler);
   }
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setPointEditChangeHandler(callback) {
+    this._callback.pointEditChange = callback;
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationInputHandler);
+    this.getElement()
+      .querySelector('.event__type-list')
+      .addEventListener('change', this._eventTypeChangeHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+    );
+  }
+
+  static parseDataToPoint(data) {
+    return data = Object.assign(
+      {},
+      data,
+    );
   }
 }
 
