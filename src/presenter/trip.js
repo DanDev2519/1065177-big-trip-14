@@ -5,14 +5,17 @@ import MessageCreatePointView from '../view/trip-message';
 import PointPresenter from './point';
 import {render, RenderPosition, remove} from '../utils/render';
 import {sortPointDayDown, sortPointTimeDown, sortPointPriceDown} from '../utils/trip';
+import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
 
 class Trip {
-  constructor(tripContainer, pointsModel, offersModel, destinationsModel) {
+  constructor(tripContainer, pointsModel, offersModel, destinationsModel, filterModel) {
     this._tripContainer = tripContainer;
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
+    this._filterModel = filterModel;
+
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY_DOWN;
 
@@ -27,11 +30,10 @@ class Trip {
     this._handlerPointReset = this._handlerPointReset.bind(this);
 
     this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
-    // _Значниея _tripOffers и _tripDestinations получать в init
-    // или при создании компонен PointPresenter и TripAddPointView передавать в них модели
     this._tripOffers = this._getOffers().slice();
     this._tripDestinations = this._getDestinations().slice();
 
@@ -39,16 +41,20 @@ class Trip {
   }
 
   _getPoints() {
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filteredPoints = filter[filterType](points);
+
     switch (this._currentSortType) {
       case SortType.DAY_DOWN:
-        return this._pointsModel.getPoints().slice().sort(sortPointDayDown);
+        return filteredPoints.sort(sortPointDayDown);
       case SortType.PRICE_DOWN:
-        return this._pointsModel.getPoints().slice().sort(sortPointPriceDown);
+        return filteredPoints.sort(sortPointPriceDown);
       case SortType.TIME_DOWN:
-        return this._pointsModel.getPoints().slice().sort(sortPointTimeDown);
+        return filteredPoints.sort(sortPointTimeDown);
     }
 
-    return this._pointsModel.getPoints().slice();
+    return filteredPoints;
   }
 
   _getOffers() {
@@ -155,7 +161,6 @@ class Trip {
   }
 
   _clearTrip({resetSortType = false} = {}) {
-    // _Можно тут вызвать этот метод, чтоб не посторять код
     this._clearPointList();
 
     remove(this._sortComponent);

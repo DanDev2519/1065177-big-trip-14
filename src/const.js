@@ -36,4 +36,10 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export { TRIP_TYPE, CITIES_VISITED, SortType, UserAction, UpdateType };
+const FilterType = {
+  EVERYTHING: 'everything ',
+  FUTURE: 'future ',
+  PAST: 'past ',
+};
+
+export { TRIP_TYPE, CITIES_VISITED, SortType, UserAction, UpdateType, FilterType };
