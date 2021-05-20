@@ -21,7 +21,7 @@ const filters = generateFilter(points);
 // console.log(points, offers, destinations);
 
 const pointsModel = new PointsModel();
-pointsModel.setTasks(points);
+pointsModel.setPoints(points);
 const offersModel = new OffersModel();
 offersModel.setOffers(offers);
 const destinationsModel = new DestinationsModel();
@@ -35,10 +35,9 @@ const pageMain = document.querySelector('.page-main');
 const tripEvents = pageMain.querySelector('.trip-events');
 
 render(tripControlsNavigation, new SiteMenuView());
-// _Передать в TripInfoView модель или можно pointsModel.getPoints()
-render(tripMain, new TripInfoView(points), RenderPosition.AFTERBEGIN);
+render(tripMain, new TripInfoView(pointsModel), RenderPosition.AFTERBEGIN);
 render(tripControlsFilters, new FilterView(filters));
 
 const tripPresenter = new TripPresenter(tripEvents, pointsModel, offersModel, destinationsModel);
 
-tripPresenter.init(points, offers, destinations);
+tripPresenter.init();

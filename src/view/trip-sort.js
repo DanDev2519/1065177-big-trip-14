@@ -1,10 +1,10 @@
 import AbstractView from './abstract';
 import {SortType} from '../const.js';
 
-const createTripSortMarkup = () => {
+const createTripSortMarkup = (currentSortType) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <div class="trip-sort__item  trip-sort__item--day">
-        <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked data-sort-type="${SortType.DAY_DOWN}">
+        <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${currentSortType === SortType.DAY_DOWN ? 'checked' : ''} data-sort-type="${SortType.DAY_DOWN}">
         <label class="trip-sort__btn" for="sort-day">Day</label>
       </div>
 
@@ -14,12 +14,12 @@ const createTripSortMarkup = () => {
       </div>
 
       <div class="trip-sort__item  trip-sort__item--time">
-        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" data-sort-type="${SortType.TIME_DOWN}">
+        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${currentSortType === SortType.TIME_DOWN ? 'checked' : ''} data-sort-type="${SortType.TIME_DOWN}">
         <label class="trip-sort__btn" for="sort-time">Time</label>
       </div>
 
       <div class="trip-sort__item  trip-sort__item--price">
-        <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" data-sort-type="${SortType.PRICE_DOWN}">
+        <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${currentSortType === SortType.PRICE_DOWN ? 'checked' : ''} data-sort-type="${SortType.PRICE_DOWN}">
         <label class="trip-sort__btn" for="sort-price">Price</label>
       </div>
 
@@ -32,14 +32,14 @@ const createTripSortMarkup = () => {
 };
 
 class TripSort extends AbstractView {
-  constructor() {
+  constructor(currentSortType) {
     super();
-
+    this._currentSortType = currentSortType;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createTripSortMarkup();
+    return createTripSortMarkup(this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {

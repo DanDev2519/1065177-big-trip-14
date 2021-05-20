@@ -1,6 +1,7 @@
 import TripPointView from '../view/trip-point';
 import TripEditPointView from '../view/trip-edit';
 import {render, RenderPosition, replace, remove} from '../utils/render';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -112,6 +113,8 @@ class Point {
 
   _handlerFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._point,
@@ -124,7 +127,11 @@ class Point {
 
   _handleFormSubmit(point) {
     this._switchPointToView();
-    this._changeData(point);
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   }
 
   _handleFormReset() {

@@ -17,11 +17,23 @@ const CITIES_VISITED = [
   'Geneva',
 ];
 
-
 const SortType = {
   DAY_DOWN: 'day-down',
   PRICE_DOWN: 'price-down',
   TIME_DOWN: 'Time-down',
 };
 
-export { TRIP_TYPE, CITIES_VISITED, SortType };
+
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export { TRIP_TYPE, CITIES_VISITED, SortType, UserAction, UpdateType };
