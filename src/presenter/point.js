@@ -23,6 +23,7 @@ class Point {
     this._handlerFavoriteClick = this._handlerFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormReset = this._handleFormReset.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handlerPointEditChange = this._handlerPointEditChange.bind(this);
   }
@@ -45,6 +46,7 @@ class Point {
     this._pointComponent.setFavoriteClickHandler(this._handlerFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormResetHandler(this._handleFormReset);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setPointEditChangeHandler(this._handlerPointEditChange);
 
     if (prevPointComponent == null || prevPointEditComponent == null) {
@@ -127,8 +129,17 @@ class Point {
 
   _handleFormSubmit(point) {
     this._switchPointToView();
+    // _Как можно в проекте оптимизировать обновление точки маршрута, как в демке 7.1.6
     this._changeData(
       UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
       UpdateType.MINOR,
       point,
     );

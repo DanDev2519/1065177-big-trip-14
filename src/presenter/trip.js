@@ -178,7 +178,7 @@ class Trip {
       // this._renderPointAdd();
       this._renderPoints(points);
     } else {
-      this.__renderMessageCreate();
+      this._renderMessageCreate();
     }
   }
 }

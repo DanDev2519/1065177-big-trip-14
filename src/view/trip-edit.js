@@ -137,9 +137,22 @@ class TripEditPoint extends SmartView {
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
+
+  // _Мне этот метод ведь не нужен, так как каденжарь вешаются в презенторе
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  // removeElement() {
+  //   super.removeElement();
+
+  //   if (this._datepicker) {
+  //     this._datepicker.destroy();
+  //     this._datepicker = null;
+  //   }
+  // }
 
   // reset(point) {
   //   this.updateData(
@@ -156,6 +169,7 @@ class TripEditPoint extends SmartView {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setPointEditChangeHandler(this._callback.pointEditChange);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setDatepicker();
   }
 
@@ -301,6 +315,11 @@ class TripEditPoint extends SmartView {
     this._callback.formSubmit(TripEditPoint.parseDataToPoint(this._pointData));
   }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(TripEditPoint.parseDataToPoint(this._pointData));
+  }
+
   setFormResetHandler(callback) {
     this._callback.formReset = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formResetHandler);
@@ -319,6 +338,11 @@ class TripEditPoint extends SmartView {
     this.getElement()
       .querySelector('.event__type-list')
       .addEventListener('change', this._eventTypeChangeHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parsePointToData(point) {
