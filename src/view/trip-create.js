@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+// import he from 'he';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
@@ -130,7 +131,6 @@ class TripAddPoint extends SmartView {
   constructor(offers, destinations, point = INITIAL_POINT) {
     super();
     this._pointData = TripAddPoint.parsePointToData(point);
-    window.__addPoint = this._pointData;
     this._offers = offers.slice();
     this._destinations = destinations.slice();
 
@@ -144,6 +144,7 @@ class TripAddPoint extends SmartView {
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this.setDatepicker();
@@ -156,6 +157,7 @@ class TripAddPoint extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setDatepicker();
   }
 
@@ -306,15 +308,27 @@ class TripAddPoint extends SmartView {
     this._callback.formSubmit(TripAddPoint.parseDataToPoint(this._pointData));
   }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick();
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
   static parsePointToData(point) {
+    // _Сейчас если попытаться добавить точку маршрута, первого типа (такси) и выбрать offer любой. Затем нажать Delete в форме и снова добавить ночку маршрута, то offer будет уже выбран. Это связано с изменением массива options в INITIAL_POINT
     return Object.assign(
       {},
       point,
+      {options: []},
     );
   }
 

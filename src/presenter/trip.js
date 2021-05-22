@@ -1,12 +1,12 @@
 import TripSortView from '../view/trip-sort';
 import TripEventsLisView from '../view/trip-point-list';
-import TripAddPointView from '../view/trip-create';
 import MessageCreatePointView from '../view/trip-message';
 import PointPresenter from './point';
+import PointNewPresenter from './point-new';
 import {render, RenderPosition, remove} from '../utils/render';
 import {sortPointDayDown, sortPointTimeDown, sortPointPriceDown} from '../utils/trip';
-import {filter} from '../utils/filter.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {filter} from '../utils/filter';
+import {SortType, UpdateType, UserAction, FilterType} from '../const';
 
 class Trip {
   constructor(tripContainer, pointsModel, offersModel, destinationsModel, filterModel) {
@@ -20,7 +20,8 @@ class Trip {
     this._currentSortType = SortType.DAY_DOWN;
 
     this._sortComponent = null;
-    this._pointsListComponent = new TripEventsLisView();
+    // this._pointsListComponent = new TripEventsLisView();
+    this._pointsListComponent = null;
     this._messageCreateComponent = new MessageCreatePointView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -38,6 +39,25 @@ class Trip {
     this._tripDestinations = this._getDestinations().slice();
 
     this._renderTrip();
+  }
+
+  createPoint() {
+    this._currentSortType = SortType.DAY_DOWN;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+
+    remove(this._messageCreateComponent);
+
+    if (this._pointsListComponent === null) {
+      this._renderPointsList();
+    }
+    // _Можно ли создавать презентер не в консрукторе, а тут
+    if (this._pointNewPresenter) {
+      this._pointNewPresenter.destroy();
+      this._pointNewPresenter = null;
+    }
+
+    this._pointNewPresenter = new PointNewPresenter(this._pointsListContainer, this._handleViewAction);
+    this._pointNewPresenter.init(this._tripOffers, this._tripDestinations);
   }
 
   _getPoints() {
@@ -66,6 +86,7 @@ class Trip {
   }
 
   _handleModeChange() {
+    this._pointNewPresenter && this._pointNewPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.resetView());
@@ -124,7 +145,7 @@ class Trip {
     this._sortComponent = new TripSortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
-    render(this._tripContainer, this._sortComponent);
+    render(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(point) {
@@ -137,12 +158,6 @@ class Trip {
     points.forEach((tripPoint) => this._renderPoint(tripPoint));
   }
 
-  _renderPointAdd() {
-    this._pointAddComponent = new TripAddPointView(this._tripOffers, this._tripDestinations);
-
-    render(this._pointsListContainer, this._pointAddComponent, RenderPosition.AFTERBEGIN);
-  }
-
   _clearPointList() {
     Object
       .values(this._pointPresenter)
@@ -151,6 +166,12 @@ class Trip {
   }
 
   _renderPointsList() {
+    if (this._pointsListComponent !== null) {
+      this._pointsListComponent = null;
+    }
+
+    this._pointsListComponent = new TripEventsLisView();
+
     render(this._tripContainer, this._pointsListComponent);
 
     this._pointsListContainer = this._tripContainer.querySelector('.trip-events__list');
@@ -161,9 +182,12 @@ class Trip {
   }
 
   _clearTrip({resetSortType = false} = {}) {
+    this._pointNewPresenter && this._pointNewPresenter.destroy();
     this._clearPointList();
 
     remove(this._sortComponent);
+    remove(this._pointsListComponent);
+    this._pointsListComponent = null;
     remove(this._messageCreateComponent);
 
     // _Что нужно сделать с _pointsListComponent, чтоб заново не вызывался _renderPointsList в _renderTrip

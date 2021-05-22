@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+// import he from 'he';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
@@ -84,7 +85,7 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ?'' : 'list="destination-list-1"'}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ? '' : 'list="destination-list-1"'}>
             ${createDestinationListMarkup(CITIES_VISITED)}
           </div>
 
@@ -141,24 +142,6 @@ class TripEditPoint extends SmartView {
 
     this._setInnerHandlers();
   }
-
-  // _Мне этот метод ведь не нужен, так как каденжарь вешаются в презенторе
-  // Перегружаем метод родителя removeElement,
-  // чтобы при удалении удалялся более ненужный календарь
-  // removeElement() {
-  //   super.removeElement();
-
-  //   if (this._datepicker) {
-  //     this._datepicker.destroy();
-  //     this._datepicker = null;
-  //   }
-  // }
-
-  // reset(point) {
-  //   this.updateData(
-  //     TripEditPoint.parsePointToData(point),
-  //   );
-  // }
 
   getTemplate() {
     return createTripEditMarkup(this._pointData, this._offer, this._destination);
