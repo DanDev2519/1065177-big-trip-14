@@ -1,4 +1,4 @@
-import {sortObjByField} from '../utils/common';
+import {sortObjByFieldUp} from '../utils/common';
 import dayjs from 'dayjs';
 import AbstractView from './abstract';
 
@@ -28,7 +28,7 @@ const tripDurationMarkup = (start, finish) => {
 const createTripInfoMarkup = (points) => {
   const sarts = points.map((point) => point.dateIn).sort();
   const finishes = points.map((point) => point.dateOut).sort();
-  const pointsByDateIn = points.sort(sortObjByField('dateIn'));
+  const pointsByDateIn = points.sort(sortObjByFieldUp('dateIn'));
   const sumPrices = points.reduce((accumulator, current) => accumulator + current.price, 0);
   const sumOptionsPointArr = points.map((point) => point.options.reduce((accumulator, current) => accumulator + current.cost, 0));
   const sumOptions = sumOptionsPointArr.reduce((accumulator, current) => accumulator + current, 0);

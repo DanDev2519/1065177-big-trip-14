@@ -42,4 +42,9 @@ const FilterType = {
   PAST: 'past ',
 };
 
-export { TRIP_TYPE, CITIES_VISITED, SortType, UserAction, UpdateType, FilterType };
+const MenuItem = {
+  TABLE: 'Table',
+  STATS: 'Stats',
+};
+
+export { TRIP_TYPE, CITIES_VISITED, SortType, UserAction, UpdateType, FilterType, MenuItem };

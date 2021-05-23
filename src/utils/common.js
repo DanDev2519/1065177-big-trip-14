@@ -10,12 +10,20 @@ const upFirst = (str) => {
   return str[0].toUpperCase() + str.slice(1);
 };
 
-const sortObjByField = (field) => {
+const sortObjByFieldUp = (field) => {
   return (a, b) => a[field] > b[field] ? 1 : -1;
 };
+
+const sortObjByFieldDown = (field) => {
+  return (a, b) => a[field] < b[field] ? 1 : -1;
+};
+
+const makeItemsUniq = (items) => [...new Set(items)];
 
 export {
   getRandomInteger,
   upFirst,
-  sortObjByField
+  sortObjByFieldUp,
+  sortObjByFieldDown,
+  makeItemsUniq
 };

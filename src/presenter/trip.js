@@ -29,16 +29,23 @@ class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handlerPointReset = this._handlerPointReset.bind(this);
-
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
     this._tripOffers = this._getOffers().slice();
     this._tripDestinations = this._getDestinations().slice();
 
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderTrip();
+  }
+
+  destroy() {
+    this._clearTrip({resetSortType: true});
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint() {
@@ -204,7 +211,6 @@ class Trip {
     if (pointCount) {
       this._renderSort();
       this._renderPointsList();
-      // this._renderPointAdd();
       this._renderPoints(points);
     } else {
       this._renderMessageCreate();
