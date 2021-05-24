@@ -1,10 +1,10 @@
 import SiteMenuView from './view/site-menu';
-import TripInfoView from './view/trip-info';
 import StatisticsView from './view/statistics';
 import {generatePoint} from './mock/point';
 import {generateDestination} from './mock/destination';
 import {generateOfferList} from './mock/offer';
-import {render, RenderPosition, remove} from './utils/render';
+import {render, remove} from './utils/render';
+import TripInfoPresenter from './presenter/trip-info';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/points';
@@ -39,10 +39,10 @@ const pageBodyContainer = pageMain.querySelector('.page-body__container');
 const tripEvents = pageMain.querySelector('.trip-events');
 
 render(tripControlsNavigation, siteMenuComponent);
-render(tripMain, new TripInfoView(pointsModel), RenderPosition.AFTERBEGIN);
 
 const tripPresenter = new TripPresenter(tripEvents, pointsModel, offersModel, destinationsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlsFilters, filterModel, pointsModel);
+const tripInfoPresenter = new TripInfoPresenter(tripMain, pointsModel);
 
 let statisticsComponent = null;
 
@@ -67,6 +67,7 @@ const handleSiteMenuClick = (menuItem) => {
 
 siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
+tripInfoPresenter.init();
 filterPresenter.init();
 tripPresenter.init();
 

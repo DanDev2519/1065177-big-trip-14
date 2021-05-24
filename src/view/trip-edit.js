@@ -253,7 +253,7 @@ class TripEditPoint extends SmartView {
       return;
     }
     this.updateData({
-      price: evt.target.value,
+      price: +evt.target.value,
     }, true);
   }
 
@@ -279,13 +279,13 @@ class TripEditPoint extends SmartView {
 
   _startDateChangeHandler([userDate]) {
     this.updateData({
-      dateIn: userDate,
+      dateIn: flatpickr.formatDate(userDate, 'Y-m-dTH:i'),
     });
   }
 
   _endDateChangeHandler([userDate]) {
     this.updateData({
-      dateOut: userDate,
+      dateOut: flatpickr.formatDate(userDate, 'Y-m-dTH:i'),
     });
   }
 
