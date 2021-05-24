@@ -57,7 +57,7 @@ class Trip {
     if (this._pointsListComponent === null) {
       this._renderPointsList();
     }
-    // _Можно ли создавать презентер не в консрукторе, а тут
+
     if (this._pointNewPresenter) {
       this._pointNewPresenter.destroy();
       this._pointNewPresenter = null;
@@ -196,8 +196,6 @@ class Trip {
     remove(this._pointsListComponent);
     this._pointsListComponent = null;
     remove(this._messageCreateComponent);
-
-    // _Что нужно сделать с _pointsListComponent, чтоб заново не вызывался _renderPointsList в _renderTrip
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY_DOWN;

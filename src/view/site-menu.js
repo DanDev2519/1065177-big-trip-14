@@ -5,13 +5,13 @@ const createSiteMenuMarkup = () => {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
       <a class="trip-tabs__btn  trip-tabs__btn--active" href="#" data-menu="${MenuItem.TABLE}">Table</a>
       <a class="trip-tabs__btn" href="#" data-menu="${MenuItem.STATS}">Stats</a>
-    </nav>
-  `;
+    </nav>`;
 };
 
 class SiteMenu extends AbstractView {
   constructor() {
     super();
+    this._currentMenu = MenuItem.TABLE;
 
     this._menuClickHandler = this._menuClickHandler.bind(this);
   }
@@ -22,8 +22,10 @@ class SiteMenu extends AbstractView {
 
   _menuClickHandler(evt) {
     evt.preventDefault();
+    if (this._currentMenu != evt.target.dataset.menu) {
+      this._callback.menuClick(evt.target.dataset.menu);
+    }
     this.setMenuItem(evt.target.dataset.menu);
-    this._callback.menuClick(evt.target.dataset.menu);
   }
 
   setMenuClickHandler(callback) {
@@ -33,6 +35,7 @@ class SiteMenu extends AbstractView {
 
   setMenuItem(menuItem) {
     const items = this.getElement().querySelectorAll('[data-menu]');
+    this._currentMenu = menuItem;
     if (items.length) {
       items.forEach((item) => {
         item.classList.remove('trip-tabs__btn--active');
@@ -41,11 +44,6 @@ class SiteMenu extends AbstractView {
         }
       });
     }
-    // const item = this.getElement().querySelector(`[data-menu=${menuItem}]`);
-
-    // if (item !== null) {
-    //   item.classList.add('trip-tabs__btn--active');
-    // }
   }
 }
 

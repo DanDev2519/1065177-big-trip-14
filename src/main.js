@@ -49,7 +49,6 @@ let statisticsComponent = null;
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
-      // _Как должно выглядеть условие проверки, чтоб повторно не запускался tripPresenter.init()
       filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
       tripPresenter.init();
       remove(statisticsComponent);

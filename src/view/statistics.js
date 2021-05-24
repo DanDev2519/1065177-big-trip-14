@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import {subtractDT, setDifferenceHum} from '../utils/trip';
 import {sortObjByFieldDown, makeItemsUniq} from '../utils/common';
 
-// _Можно ли в статистике изменить константу
 const BAR_HEIGHT = 55;
 
 const renderMoneyChart = (moneyCtx, statisticsByTypes) => {

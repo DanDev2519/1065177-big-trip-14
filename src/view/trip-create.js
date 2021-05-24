@@ -95,7 +95,7 @@ const createTripAddMarkup = (point, offer, destinationInfo) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ?'' : 'list="destination-list-1"'}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ?'' : 'list="destination-list-1"'} required>
             ${createDestinationListMarkup(CITIES_VISITED)}
           </div>
 
@@ -112,7 +112,7 @@ const createTripAddMarkup = (point, offer, destinationInfo) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}" required>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -252,16 +252,24 @@ class TripAddPoint extends SmartView {
   _destinationInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
-    if (CITIES_VISITED.includes(evt.target.value) || evt.target.value === '') {
-      this.updateData({
-        destination: evt.target.value,
-      });
+    if (!CITIES_VISITED.includes(evt.target.value)) {
+      evt.target.value = this._pointData.destination;
+      return;
     }
+    this.updateData({
+      destination: evt.target.value,
+    });
+    // if (CITIES_VISITED.includes(evt.target.value) || evt.target.value === '') {
+    //   this.updateData({
+    //     destination: evt.target.value,
+    //   });
+    // }
   }
 
   _priceInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
+    evt.target.value = evt.target.value.replace(/[^\d]/g, '');
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
       return;
@@ -324,7 +332,6 @@ class TripAddPoint extends SmartView {
   }
 
   static parsePointToData(point) {
-    // _Сейчас если попытаться добавить точку маршрута, первого типа (такси) и выбрать offer любой. Затем нажать Delete в форме и снова добавить ночку маршрута, то offer будет уже выбран. Это связано с изменением массива options в INITIAL_POINT
     return Object.assign(
       {},
       point,
