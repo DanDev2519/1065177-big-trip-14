@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+// import he from 'he';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
@@ -94,7 +95,7 @@ const createTripAddMarkup = (point, offer, destinationInfo) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ?'' : 'list="destination-list-1"'}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ?'' : 'list="destination-list-1"'} required>
             ${createDestinationListMarkup(CITIES_VISITED)}
           </div>
 
@@ -111,7 +112,7 @@ const createTripAddMarkup = (point, offer, destinationInfo) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}" required>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -130,7 +131,6 @@ class TripAddPoint extends SmartView {
   constructor(offers, destinations, point = INITIAL_POINT) {
     super();
     this._pointData = TripAddPoint.parsePointToData(point);
-    window.__addPoint = this._pointData;
     this._offers = offers.slice();
     this._destinations = destinations.slice();
 
@@ -144,6 +144,7 @@ class TripAddPoint extends SmartView {
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this.setDatepicker();
@@ -156,6 +157,7 @@ class TripAddPoint extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setDatepicker();
   }
 
@@ -250,22 +252,26 @@ class TripAddPoint extends SmartView {
   _destinationInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
-    if (CITIES_VISITED.includes(evt.target.value) || evt.target.value === '') {
-      this.updateData({
-        destination: evt.target.value,
-      });
+    if (!CITIES_VISITED.includes(evt.target.value)) {
+      evt.target.setCustomValidity('Select a destination from the list');
+      evt.target.reportValidity();
+      return;
     }
+    this.updateData({
+      destination: evt.target.value,
+    });
   }
 
   _priceInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
+    evt.target.value = evt.target.value.replace(/[^\d]/g, '');
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
       return;
     }
     this.updateData({
-      price: evt.target.value,
+      price: +evt.target.value,
     }, true);
   }
 
@@ -291,19 +297,27 @@ class TripAddPoint extends SmartView {
 
   _startDateChangeHandler([userDate]) {
     this.updateData({
-      dateIn: userDate,
+      dateIn: flatpickr.formatDate(userDate, 'Y-m-dTH:i'),
     });
   }
 
   _endDateChangeHandler([userDate]) {
     this.updateData({
-      dateOut: userDate,
+      dateOut: flatpickr.formatDate(userDate, 'Y-m-dTH:i'),
     });
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+    // const reportVal = evt.target.reportValidity();
+    // alert(reportVal);
+
     this._callback.formSubmit(TripAddPoint.parseDataToPoint(this._pointData));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick();
   }
 
   setFormSubmitHandler(callback) {
@@ -311,10 +325,16 @@ class TripAddPoint extends SmartView {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
   static parsePointToData(point) {
     return Object.assign(
       {},
       point,
+      {options: []},
     );
   }
 

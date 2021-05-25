@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+// import he from 'he';
 import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
@@ -84,7 +85,7 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ?'' : 'list="destination-list-1"'}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ? '' : 'list="destination-list-1"'}>
             ${createDestinationListMarkup(CITIES_VISITED)}
           </div>
 
@@ -101,7 +102,7 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}"  required>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -137,15 +138,10 @@ class TripEditPoint extends SmartView {
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
-
-  // reset(point) {
-  //   this.updateData(
-  //     TripEditPoint.parsePointToData(point),
-  //   );
-  // }
 
   getTemplate() {
     return createTripEditMarkup(this._pointData, this._offer, this._destination);
@@ -156,6 +152,7 @@ class TripEditPoint extends SmartView {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setPointEditChangeHandler(this._callback.pointEditChange);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setDatepicker();
   }
 
@@ -238,7 +235,8 @@ class TripEditPoint extends SmartView {
     evt.preventDefault();
     // _Правильная ли проверка
     if (!CITIES_VISITED.includes(evt.target.value)) {
-      evt.target.value = this._pointData.destination;
+      evt.target.setCustomValidity('Select a destination from the list');
+      evt.target.reportValidity();
       return;
     }
     this.updateData({
@@ -250,12 +248,13 @@ class TripEditPoint extends SmartView {
   _priceInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
+    evt.target.value = evt.target.value.replace(/[^\d]/g, '');
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
       return;
     }
     this.updateData({
-      price: evt.target.value,
+      price: +evt.target.value,
     }, true);
   }
 
@@ -281,13 +280,13 @@ class TripEditPoint extends SmartView {
 
   _startDateChangeHandler([userDate]) {
     this.updateData({
-      dateIn: userDate,
+      dateIn: flatpickr.formatDate(userDate, 'Y-m-dTH:i'),
     });
   }
 
   _endDateChangeHandler([userDate]) {
     this.updateData({
-      dateOut: userDate,
+      dateOut: flatpickr.formatDate(userDate, 'Y-m-dTH:i'),
     });
   }
 
@@ -299,6 +298,11 @@ class TripEditPoint extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(TripEditPoint.parseDataToPoint(this._pointData));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(TripEditPoint.parseDataToPoint(this._pointData));
   }
 
   setFormResetHandler(callback) {
@@ -319,6 +323,11 @@ class TripEditPoint extends SmartView {
     this.getElement()
       .querySelector('.event__type-list')
       .addEventListener('change', this._eventTypeChangeHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parsePointToData(point) {

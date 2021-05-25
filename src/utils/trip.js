@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+// import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+// import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import duration from 'dayjs/plugin/duration';
-dayjs.extend(isSameOrBefore);
+// dayjs.extend(isSameOrBefore);
+// dayjs.extend(isSameOrAfter);
 dayjs.extend(duration);
 
 const subtractDT = (start, end) => {
@@ -29,7 +31,7 @@ const isTripPast = (dueDate) => {
 };
 
 const isTripFuture = (dueDate) => {
-  return dayjs().isSameOrBefore(dueDate, 'D');
+  return dayjs().isBefore(dueDate, 'D');
 };
 
 const sortPointDayDown = (pointA, pointB) => {

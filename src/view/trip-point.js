@@ -54,8 +54,7 @@ const createTripPointMarkup = (point) => {
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>
-  `;
+    </li>`;
 };
 
 class TripPoint extends AbstractView {
