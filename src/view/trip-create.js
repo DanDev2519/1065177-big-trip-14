@@ -253,17 +253,13 @@ class TripAddPoint extends SmartView {
     evt.preventDefault();
     // _Правильная ли проверка
     if (!CITIES_VISITED.includes(evt.target.value)) {
-      evt.target.value = this._pointData.destination;
+      evt.target.setCustomValidity('Select a destination from the list');
+      evt.target.reportValidity();
       return;
     }
     this.updateData({
       destination: evt.target.value,
     });
-    // if (CITIES_VISITED.includes(evt.target.value) || evt.target.value === '') {
-    //   this.updateData({
-    //     destination: evt.target.value,
-    //   });
-    // }
   }
 
   _priceInputHandler(evt) {
@@ -313,6 +309,9 @@ class TripAddPoint extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+    // const reportVal = evt.target.reportValidity();
+    // alert(reportVal);
+
     this._callback.formSubmit(TripAddPoint.parseDataToPoint(this._pointData));
   }
 

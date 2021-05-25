@@ -235,7 +235,8 @@ class TripEditPoint extends SmartView {
     evt.preventDefault();
     // _Правильная ли проверка
     if (!CITIES_VISITED.includes(evt.target.value)) {
-      evt.target.value = this._pointData.destination;
+      evt.target.setCustomValidity('Select a destination from the list');
+      evt.target.reportValidity();
       return;
     }
     this.updateData({
