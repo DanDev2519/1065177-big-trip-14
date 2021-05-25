@@ -1,6 +1,7 @@
 import TripSortView from '../view/trip-sort';
 import TripEventsLisView from '../view/trip-point-list';
 import MessageCreatePointView from '../view/trip-message';
+import SiteLoadingView from '../view/site-loading';
 import PointPresenter from './point';
 import PointNewPresenter from './point-new';
 import {render, RenderPosition, remove} from '../utils/render';
@@ -9,20 +10,22 @@ import {filter} from '../utils/filter';
 import {SortType, UpdateType, UserAction, FilterType} from '../const';
 
 class Trip {
-  constructor(tripContainer, pointsModel, offersModel, destinationsModel, filterModel) {
+  constructor(tripContainer, pointsModel, offersModel, destinationsModel, filterModel, api) {
     this._tripContainer = tripContainer;
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
     this._filterModel = filterModel;
+    this._api = api;
 
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY_DOWN;
+    this._isLoading = true;
 
     this._sortComponent = null;
-    // this._pointsListComponent = new TripEventsLisView();
     this._pointsListComponent = null;
     this._messageCreateComponent = new MessageCreatePointView();
+    this._loadingComponent = new SiteLoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -102,7 +105,9 @@ class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then(() => {
+          this._pointsModel.updatePoint(updateType, update);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
@@ -124,6 +129,11 @@ class Trip {
         break;
       case UpdateType.MAJOR:
         this._clearTrip({resetSortType: true});
+        this._renderTrip();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderTrip();
         break;
     }
@@ -188,6 +198,10 @@ class Trip {
     render(this._tripContainer, this._messageCreateComponent);
   }
 
+  _renderLoading() {
+    render(this._tripContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _clearTrip({resetSortType = false} = {}) {
     this._pointNewPresenter && this._pointNewPresenter.destroy();
     this._clearPointList();
@@ -196,6 +210,7 @@ class Trip {
     remove(this._pointsListComponent);
     this._pointsListComponent = null;
     remove(this._messageCreateComponent);
+    remove(this._loadingComponent);
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY_DOWN;
@@ -203,6 +218,11 @@ class Trip {
   }
 
   _renderTrip() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const points = this._getPoints();
     const pointCount = points.length;
 
