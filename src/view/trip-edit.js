@@ -27,7 +27,7 @@ const createDestinationListMarkup = (list) => {
     </datalist>`;
 };
 
-const createSectionOffersMarkup = (offerArr, optionsArr) => {
+const createSectionOffersMarkup = (offerArr, optionsArr, isDisabled) => {
   return offerArr.length == 0 ? ''
     : `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -40,7 +40,8 @@ const createSectionOffersMarkup = (offerArr, optionsArr) => {
               data-name="${name}"
               data-cost="${cost}"
               name="event-offer-${name.toLowerCase()}-${i}"
-              ${optionsArr.filter((obj) => obj.name === name && obj.cost === cost)[0] ? 'checked' : ''}>
+              ${optionsArr.filter((obj) => obj.name === name && obj.cost === cost)[0] ? 'checked' : ''}
+              ${isDisabled ? 'disabled' : ''}>
             <label class="event__offer-label" for="event-offer-${name.toLowerCase()}-${i}">
               <span class="event__offer-title">${name}</span>
               &plus;&euro;&nbsp;
@@ -65,8 +66,8 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     </section>`;
 };
 
-const createTripEditMarkup = (point, offer, destinationInfo ) => {
-  const {type, dateIn, dateOut, destination, price, options} = point;
+const createTripEditMarkup = (point, offer, destinationInfo) => {
+  const {type, dateIn, dateOut, destination, price, options, isDisabled, isSaving, isDeleting} = point;
   const {description = '', img = []} = destinationInfo;
 
   return `<li class="trip-events__item">
@@ -77,7 +78,7 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
             ${createTypeListMarkup(TRIP_TYPE, type)}
           </div>
 
@@ -85,16 +86,16 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ? '' : 'list="destination-list-1"'}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ? '' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''}>
             ${createDestinationListMarkup(CITIES_VISITED)}
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateIn).format('DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateIn).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateOut).format('DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateOut).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -102,18 +103,22 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}"  required>
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''} required>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+            ${isSaving ? 'Saving...' : 'Save'}
+          </button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+            ${isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
+          <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
 
         <section class="event__details">
-          ${createSectionOffersMarkup(offer, options)}
+          ${createSectionOffersMarkup(offer, options, isDisabled)}
           ${createSectionDestinationMarkup(description, img)}
         </section>
       </form>
@@ -334,14 +339,25 @@ class TripEditPoint extends SmartView {
     return Object.assign(
       {},
       point,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
     );
   }
 
   static parseDataToPoint(data) {
-    return data = Object.assign(
+    data = Object.assign(
       {},
       data,
     );
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
   }
 }
 
