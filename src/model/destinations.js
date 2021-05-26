@@ -33,7 +33,6 @@ class Destinations extends Observer {
     return adaptedDestination;
   }
 
-  // _Нужен ли adaptToServer
   static adaptToServer(destination) {
     const adaptedDestination = Object.assign(
       {},

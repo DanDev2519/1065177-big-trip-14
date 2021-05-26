@@ -44,9 +44,6 @@ class Point {
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    // const destinationPoint = this._pointDestinations.find((obj) => obj.name === this._point.destination.name);
-    // const offersPointArr = this._pointOffers.find((obj) => obj.type === this._point.type).offers;
-    // this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint, this._offersType, this._destinationsCity);
     this._pointEditComponent = new TripEditPointView(this._point, this._pointOffers, this._pointDestinations, this._offersType, this._destinationsCity);
 
     this._pointComponent = new TripPointView(this._point);
@@ -69,8 +66,6 @@ class Point {
 
     if (this._mode === Mode.EDITING) {
       replace(this._pointEditComponent, prevPointEditComponent);
-      // replace(this._pointComponent, prevPointEditComponent);
-      // this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -168,8 +163,6 @@ class Point {
   }
 
   _handleFormSubmit(point) {
-    // this._switchPointToView();
-    // _Как можно в проекте оптимизировать обновление точки маршрута, как в демке 7.1.6
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,

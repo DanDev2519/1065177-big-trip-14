@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-// import he from 'he';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
@@ -76,7 +75,7 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
 };
 
 const createTripAddMarkup = (point, offer, destinationInfo, offersType, destinationsCity) => {
-  const {type, dateIn, dateOut, destination, price, options, isDisabled, isSaving} = point;
+  const {type, dateIn, dateOut, price, options, isDisabled, isSaving} = point;
   const {description = '', img = [], name = ''} = destinationInfo;
 
   return `<li class="trip-events__item">

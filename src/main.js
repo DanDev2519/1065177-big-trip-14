@@ -1,9 +1,6 @@
 import SiteMenuView from './view/site-menu';
 import StatisticsView from './view/statistics';
 import SiteErrorView from './view/site-error';
-// import {generatePoint} from './mock/point';
-// import {generateDestination} from './mock/destination';
-// import {generateOfferList} from './mock/offer';
 import {render, remove} from './utils/render';
 import TripInfoPresenter from './presenter/trip-info';
 import TripPresenter from './presenter/trip';
@@ -17,12 +14,6 @@ import Api from './api.js';
 
 const AUTHORIZATION = 'Basic MTA2NTE3NzpiaWctdHJpcC0xNAoKCg==';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
-
-// const TRIP_POINT_COUNT = 2;
-// const destinations = generateDestination();
-// const offers = generateOfferList();
-// const points = new Array(TRIP_POINT_COUNT).fill().map(() => {return generatePoint(offers);});
-// console.log(points, offers, destinations);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -88,11 +79,9 @@ const initHeader = () => {
 Promise
   .all([
     api.getOffers().then((offers) => {
-      // console.log(offers);
       offersModel.setOffers(offers);
     }),
     api.getDestinations().then((destinations) => {
-      // console.log(destinations);
       destinationsModel.setDestinations(destinations);
     }),
   ])
@@ -105,7 +94,6 @@ Promise
 
     api.getPoints()
       .then((points) => {
-        // console.log(points);
         pointsModel.setPoints(UpdateType.INIT, points);
         initHeader();
       })

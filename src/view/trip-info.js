@@ -7,7 +7,7 @@ const tripNameMarkup = (objArr) => {
   const size = objArr.length;
   return size > 3
     ? `${objArr[0].destination.name} &mdash; ... &mdash; ${objArr[size - 1].destination.name}`
-    : objArr.map((destination) => {debugger; return destination.name;}).join(' &mdash; ');
+    : objArr.map((destination) => destination.name).join(' &mdash; ');
 };
 
 const tripDurationMarkup = (start, finish) => {

@@ -1,22 +1,3 @@
-const TRIP_TYPE = [
-  'taxi',
-  'bus',
-  'train',
-  'ship',
-  'transport',
-  'drive',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'restaurant',
-];
-
-const CITIES_VISITED = [
-  'Chamonix',
-  'Amsterdam',
-  'Geneva',
-];
-
 const SortType = {
   DAY_DOWN: 'day-down',
   PRICE_DOWN: 'price-down',
@@ -48,4 +29,4 @@ const MenuItem = {
   STATS: 'Stats',
 };
 
-export { TRIP_TYPE, CITIES_VISITED, SortType, UserAction, UpdateType, FilterType, MenuItem };
+export { SortType, UserAction, UpdateType, FilterType, MenuItem };

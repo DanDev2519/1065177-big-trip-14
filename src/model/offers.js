@@ -32,7 +32,6 @@ class Offers extends Observer {
     return adaptedOffer;
   }
 
-  // _Нужен ли adaptToServer
   static adaptToServer(offer) {
     const adaptedOffer = Object.assign(
       {},

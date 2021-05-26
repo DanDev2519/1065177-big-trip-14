@@ -1,4 +1,3 @@
-// import {nanoid} from 'nanoid';
 import TripAddPointView from '../view/trip-create';
 import {render, RenderPosition, remove} from '../utils/render';
 import {UserAction, UpdateType} from '../const.js';
@@ -69,14 +68,11 @@ class PointNew {
   }
 
   _handleFormSubmit(point) {
-    // _Как можно в проекте оптимизировать обновление точки маршрута, как в демке 7.1.6
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      // Object.assign({id: nanoid()}, point),
       point,
     );
-    // this.destroy();
   }
 
   _handleDeleteClick() {

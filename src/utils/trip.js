@@ -1,9 +1,5 @@
 import dayjs from 'dayjs';
-// import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-// import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import duration from 'dayjs/plugin/duration';
-// dayjs.extend(isSameOrBefore);
-// dayjs.extend(isSameOrAfter);
 dayjs.extend(duration);
 
 const subtractDT = (start, end) => {
