@@ -1,6 +1,8 @@
 import TripPointView from '../view/trip-point';
 import TripEditPointView from '../view/trip-edit';
 import {render, RenderPosition, replace, remove} from '../utils/render';
+import {isOnline} from '../utils/common';
+import {toast} from '../utils/toast';
 import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
@@ -145,6 +147,11 @@ class Point {
   }
 
   _handleEditClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit point offline');
+      return;
+    }
+
     this._switchPointToEdit();
   }
 
@@ -163,6 +170,11 @@ class Point {
   }
 
   _handleFormSubmit(point) {
+    if (!isOnline()) {
+      toast('You can\'t save pint offline');
+      return;
+    }
+
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
@@ -171,6 +183,11 @@ class Point {
   }
 
   _handleDeleteClick(point) {
+    if (!isOnline()) {
+      toast('You can\'t delete point offline');
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,

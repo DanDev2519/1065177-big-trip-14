@@ -1,5 +1,7 @@
 import TripAddPointView from '../view/trip-create';
 import {render, RenderPosition, remove} from '../utils/render';
+import {isOnline} from '../utils/common';
+import {toast} from '../utils/toast';
 import {UserAction, UpdateType} from '../const.js';
 
 class PointNew {
@@ -68,6 +70,11 @@ class PointNew {
   }
 
   _handleFormSubmit(point) {
+    if (!isOnline()) {
+      toast('You can\'t save pint offline');
+      return;
+    }
+
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,

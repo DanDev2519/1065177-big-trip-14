@@ -1,6 +1,6 @@
-import PointsModel from './model/points';
-import OffersModel from './model/offers';
-import DescriptionsModel from './model/destinations';
+import PointsModel from '../model/points';
+import OffersModel from '../model/offers';
+import DescriptionsModel from '../model/destinations';
 
 const Method = {
   GET: 'GET',
@@ -65,6 +65,16 @@ class Api {
     return this._load({url: 'offers'})
       .then(Api.toJSON)
       .then((offers) => offers.map(OffersModel.adaptToClient));
+  }
+
+  sync(data) {
+    return this._load({
+      url: 'points/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
   }
 
   _load({
