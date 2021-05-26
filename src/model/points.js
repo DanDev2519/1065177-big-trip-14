@@ -63,7 +63,14 @@ class Points extends Observer {
       {
         dateIn: point.date_from,
         dateOut: point.date_to,
-        destination: point.destination.name,
+        destination: Object.assign(
+          {},
+          {
+            name: point.destination.name,
+            description: point.destination.description,
+            pictures: point.destination.pictures.slice(),
+          },
+        ),
         price: point.base_price,
         options: point.offers.map(({title, price}) => {
           return {name: title, cost: price};
@@ -90,12 +97,11 @@ class Points extends Observer {
         'date_to': point.dateOut,
         'destination': Object.assign(
           {},
-          {name: point.destination},
-          // _Как записывать в destination новый объект, description, pictures [{src, description}...]
-          // Который берется из дпугой модели
-          {description: ''},
-          {pictures: []},
-          // {pictures: [{src: '', description: ''}, {src: '', description: ''}]},
+          {
+            name: point.destination.name,
+            description: point.destination.description,
+            pictures: point.destination.pictures.slice(),
+          },
         ),
         'base_price': point.price,
         'offers': point.options.map(({name, cost}) => {

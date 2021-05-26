@@ -67,7 +67,7 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
 
 const createTripEditMarkup = (point, offer, destinationInfo, offersType, destinationsCity) => {
   const {type, dateIn, dateOut, destination, price, options, isDisabled, isSaving, isDeleting} = point;
-  const {description = '', img = []} = destinationInfo;
+  const {description = '', img = [], name = ''} = destinationInfo;
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -85,7 +85,7 @@ const createTripEditMarkup = (point, offer, destinationInfo, offersType, destina
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${destinationsCity.length == 0 ? '' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" ${destinationsCity.length == 0 ? '' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''}>
             ${createDestinationListMarkup(destinationsCity)}
           </div>
 
@@ -125,11 +125,14 @@ const createTripEditMarkup = (point, offer, destinationInfo, offersType, destina
 };
 
 class TripEditPoint extends SmartView {
-  constructor(point, offer, destination, offersType, destinationsCity) {
+  constructor(point, offers, destinations, offersType, destinationsCity) {
     super();
     this._pointData = TripEditPoint.parsePointToData(point);
-    this._offer = offer;
-    this._destination = destination;
+    this._offers = offers;
+    this._offer = this._offers.find((obj) => obj.type === this._pointData.type).offers;
+    this._destinations = destinations;
+    this._destination = this._destinations.find((obj) => obj.name === this._pointData.destination.name);
+
     this._offersType = offersType.slice();
     this._destinationsCity = destinationsCity.slice();
 
@@ -239,21 +242,29 @@ class TripEditPoint extends SmartView {
 
   _destinationInputHandler(evt) {
     evt.preventDefault();
-    // _Правильная ли проверка
     if (!this._destinationsCity.includes(evt.target.value)) {
       evt.target.setCustomValidity('Select a destination from the list');
       evt.target.reportValidity();
       return;
     }
+    const newDestination = this._destinations.find((obj) => obj.name === evt.target.value);
     this.updateData({
-      destination: evt.target.value,
+      destination: Object.assign(
+        {},
+        {
+          name: newDestination.name,
+          description: newDestination.description,
+          pictures: newDestination.img.map(({src, alt}) => {
+            return {src, description: alt};
+          }),
+        },
+      ),
     });
     this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
   }
 
   _priceInputHandler(evt) {
     evt.preventDefault();
-    // _Правильная ли проверка
     evt.target.value = evt.target.value.replace(/[^\d]/g, '');
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;

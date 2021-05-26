@@ -10,7 +10,7 @@ const INITIAL_POINT = {
   type: '',
   dateIn: dayjs().hour(0).minute(0).format('YYYY-MM-DDTHH:mm'),
   dateOut: dayjs().hour(0).minute(0).format('YYYY-MM-DDTHH:mm'),
-  destination: '',
+  destination: {},
   price: '',
   options: [],
   isFavorite: false,
@@ -77,7 +77,7 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
 
 const createTripAddMarkup = (point, offer, destinationInfo, offersType, destinationsCity) => {
   const {type, dateIn, dateOut, destination, price, options, isDisabled, isSaving} = point;
-  const {description = '', img = []} = destinationInfo;
+  const {description = '', img = [], name = ''} = destinationInfo;
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -95,7 +95,7 @@ const createTripAddMarkup = (point, offer, destinationInfo, offersType, destinat
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${destinationsCity.length == 0 ?'' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''} required>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" ${destinationsCity.length == 0 ?'' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''} required>
             ${createDestinationListMarkup(destinationsCity)}
           </div>
 
@@ -175,7 +175,7 @@ class TripAddPoint extends SmartView {
   }
 
   _getCurrentDestination() {
-    const currentDestination = this._destinations.find((obj) => obj.name === this._pointData.destination);
+    const currentDestination = this._destinations.find((obj) => obj.name === this._pointData.destination.name);
     return currentDestination || {};
   }
 
@@ -260,20 +260,28 @@ class TripAddPoint extends SmartView {
 
   _destinationInputHandler(evt) {
     evt.preventDefault();
-    // _Правильная ли проверка
     if (!this._destinationsCity.includes(evt.target.value)) {
       evt.target.setCustomValidity('Select a destination from the list');
       evt.target.reportValidity();
       return;
     }
+    const newDestination = this._destinations.find((obj) => obj.name === evt.target.value);
     this.updateData({
-      destination: evt.target.value,
+      destination: Object.assign(
+        {},
+        {
+          name: newDestination.name,
+          description: newDestination.description,
+          pictures: newDestination.img.map(({src, alt}) => {
+            return {src, description: alt};
+          }),
+        },
+      ),
     });
   }
 
   _priceInputHandler(evt) {
     evt.preventDefault();
-    // _Правильная ли проверка
     evt.target.value = evt.target.value.replace(/[^\d]/g, '');
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;

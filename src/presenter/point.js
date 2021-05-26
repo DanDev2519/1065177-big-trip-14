@@ -44,9 +44,10 @@ class Point {
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    const destinationPoint = this._pointDestinations.find((obj) => obj.name === this._point.destination);
-    const offersPointArr = this._pointOffers.find((obj) => obj.type === this._point.type).offers;
-    this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint, this._offersType, this._destinationsCity);
+    // const destinationPoint = this._pointDestinations.find((obj) => obj.name === this._point.destination.name);
+    // const offersPointArr = this._pointOffers.find((obj) => obj.type === this._point.type).offers;
+    // this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint, this._offersType, this._destinationsCity);
+    this._pointEditComponent = new TripEditPointView(this._point, this._pointOffers, this._pointDestinations, this._offersType, this._destinationsCity);
 
     this._pointComponent = new TripPointView(this._point);
 
