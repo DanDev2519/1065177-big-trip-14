@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 // import he from 'he';
-import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
@@ -66,7 +65,7 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     </section>`;
 };
 
-const createTripEditMarkup = (point, offer, destinationInfo) => {
+const createTripEditMarkup = (point, offer, destinationInfo, offersType, destinationsCity) => {
   const {type, dateIn, dateOut, destination, price, options, isDisabled, isSaving, isDeleting} = point;
   const {description = '', img = []} = destinationInfo;
 
@@ -79,15 +78,15 @@ const createTripEditMarkup = (point, offer, destinationInfo) => {
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
-            ${createTypeListMarkup(TRIP_TYPE, type)}
+            ${createTypeListMarkup(offersType, type)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ? '' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''}>
-            ${createDestinationListMarkup(CITIES_VISITED)}
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${destinationsCity.length == 0 ? '' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''}>
+            ${createDestinationListMarkup(destinationsCity)}
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -126,11 +125,13 @@ const createTripEditMarkup = (point, offer, destinationInfo) => {
 };
 
 class TripEditPoint extends SmartView {
-  constructor(point, offer, destination) {
+  constructor(point, offer, destination, offersType, destinationsCity) {
     super();
     this._pointData = TripEditPoint.parsePointToData(point);
     this._offer = offer;
     this._destination = destination;
+    this._offersType = offersType.slice();
+    this._destinationsCity = destinationsCity.slice();
 
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -149,7 +150,7 @@ class TripEditPoint extends SmartView {
   }
 
   getTemplate() {
-    return createTripEditMarkup(this._pointData, this._offer, this._destination);
+    return createTripEditMarkup(this._pointData, this._offer, this._destination, this._offersType, this._destinationsCity);
   }
 
   restoreHandlers() {
@@ -239,7 +240,7 @@ class TripEditPoint extends SmartView {
   _destinationInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
-    if (!CITIES_VISITED.includes(evt.target.value)) {
+    if (!this._destinationsCity.includes(evt.target.value)) {
       evt.target.setCustomValidity('Select a destination from the list');
       evt.target.reportValidity();
       return;

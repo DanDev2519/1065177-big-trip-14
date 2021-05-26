@@ -67,7 +67,7 @@ class Trip {
     }
 
     this._pointNewPresenter = new PointNewPresenter(this._pointsListContainer, this._handleViewAction);
-    this._pointNewPresenter.init(this._tripOffers, this._tripDestinations);
+    this._pointNewPresenter.init(this._tripOffers, this._tripDestinations, this._getOffersType(), this._getDestinationsCity());
   }
 
   _getPoints() {
@@ -91,8 +91,16 @@ class Trip {
     return this._offersModel.getOffers();
   }
 
+  _getOffersType() {
+    return this._offersModel.getOffersType();
+  }
+
   _getDestinations() {
     return this._destinationsModel.getDestinations();
+  }
+
+  _getDestinationsCity() {
+    return this._destinationsModel.getDestinationsCity();
   }
 
   _handleModeChange() {
@@ -186,7 +194,7 @@ class Trip {
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._pointsListContainer, this._handleViewAction, this._handleModeChange, this._handlerPointReset);
-    pointPresenter.init(point, this._tripOffers, this._tripDestinations);
+    pointPresenter.init(point, this._tripOffers, this._tripDestinations, this._getOffersType(), this._getDestinationsCity());
     this._pointPresenter[point.id] = pointPresenter;
   }
 

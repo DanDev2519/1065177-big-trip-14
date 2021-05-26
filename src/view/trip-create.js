@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 // import he from 'he';
-import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
@@ -8,7 +7,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const INITIAL_POINT = {
-  type: TRIP_TYPE[0],
+  type: '',
   dateIn: dayjs().hour(0).minute(0).format('YYYY-MM-DDTHH:mm'),
   dateOut: dayjs().hour(0).minute(0).format('YYYY-MM-DDTHH:mm'),
   destination: '',
@@ -76,7 +75,7 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     </section>`;
 };
 
-const createTripAddMarkup = (point, offer, destinationInfo) => {
+const createTripAddMarkup = (point, offer, destinationInfo, offersType, destinationsCity) => {
   const {type, dateIn, dateOut, destination, price, options, isDisabled, isSaving} = point;
   const {description = '', img = []} = destinationInfo;
 
@@ -89,15 +88,15 @@ const createTripAddMarkup = (point, offer, destinationInfo) => {
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
-            ${createTypeListMarkup(TRIP_TYPE, type)}
+            ${createTypeListMarkup(offersType, type)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ?'' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''} required>
-            ${createDestinationListMarkup(CITIES_VISITED)}
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${destinationsCity.length == 0 ?'' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''} required>
+            ${createDestinationListMarkup(destinationsCity)}
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -131,11 +130,18 @@ const createTripAddMarkup = (point, offer, destinationInfo) => {
 };
 
 class TripAddPoint extends SmartView {
-  constructor(offers, destinations, point = INITIAL_POINT) {
+  constructor(offers, destinations, offersType, destinationsCity, point = INITIAL_POINT) {
     super();
-    this._pointData = TripAddPoint.parsePointToData(point);
     this._offers = offers.slice();
     this._destinations = destinations.slice();
+    this._offersType = offersType.slice();
+    this._destinationsCity = destinationsCity.slice();
+    this._point = Object.assign(
+      {},
+      point,
+      {type: this._offersType[0]},
+    );
+    this._pointData = TripAddPoint.parsePointToData(this._point);
 
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -154,7 +160,7 @@ class TripAddPoint extends SmartView {
   }
 
   getTemplate() {
-    return createTripAddMarkup(this._pointData, this._getCurrentOffers(), this._getCurrentDestination());
+    return createTripAddMarkup(this._pointData, this._getCurrentOffers(), this._getCurrentDestination(), this._offersType, this._destinationsCity);
   }
 
   restoreHandlers() {
@@ -255,7 +261,7 @@ class TripAddPoint extends SmartView {
   _destinationInputHandler(evt) {
     evt.preventDefault();
     // _Правильная ли проверка
-    if (!CITIES_VISITED.includes(evt.target.value)) {
+    if (!this._destinationsCity.includes(evt.target.value)) {
       evt.target.setCustomValidity('Select a destination from the list');
       evt.target.reportValidity();
       return;
@@ -312,9 +318,6 @@ class TripAddPoint extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    // const reportVal = evt.target.reportValidity();
-    // alert(reportVal);
-
     this._callback.formSubmit(TripAddPoint.parseDataToPoint(this._pointData));
   }
 

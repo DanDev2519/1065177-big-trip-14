@@ -14,6 +14,10 @@ class Offers extends Observer {
     return this._offers;
   }
 
+  getOffersType() {
+    return this._offers.map((offer) => offer.type);
+  }
+
   static adaptToClient(offer) {
     const adaptedOffer = Object.assign(
       {},

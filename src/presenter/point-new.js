@@ -15,11 +15,13 @@ class PointNew {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(pointOffers, pointDestinations) {
+  init(pointOffers, pointDestinations, offersType, destinationsCity) {
     this._pointOffers = pointOffers.slice();
     this._pointDestinations = pointDestinations.slice();
+    this._offersType = offersType.slice();
+    this._destinationsCity = destinationsCity.slice();
 
-    this._pointEditComponent = new TripAddPointView(this._pointOffers, this._pointDestinations);
+    this._pointEditComponent = new TripAddPointView(this._pointOffers, this._pointDestinations, this._offersType, this._destinationsCity);
 
     render(this._pointsListContainer, this._pointEditComponent, RenderPosition.AFTERBEGIN);
 

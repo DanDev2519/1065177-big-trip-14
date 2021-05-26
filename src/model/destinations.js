@@ -14,6 +14,10 @@ class Destinations extends Observer {
     return this._destinations;
   }
 
+  getDestinationsCity() {
+    return this._destinations.map((destination) => destination.name);
+  }
+
   static adaptToClient(destination) {
     const adaptedDestination = Object.assign(
       {},

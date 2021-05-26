@@ -34,17 +34,19 @@ class Point {
     this._handlerPointEditChange = this._handlerPointEditChange.bind(this);
   }
 
-  init(point, pointOffers, pointDestinations) {
+  init(point, pointOffers, pointDestinations, offersType, destinationsCity) {
     this._point = point;
     this._pointOffers = pointOffers.slice();
     this._pointDestinations = pointDestinations.slice();
+    this._offersType = offersType.slice();
+    this._destinationsCity = destinationsCity.slice();
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
     const destinationPoint = this._pointDestinations.find((obj) => obj.name === this._point.destination);
     const offersPointArr = this._pointOffers.find((obj) => obj.type === this._point.type).offers;
-    this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint);
+    this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint, this._offersType, this._destinationsCity);
 
     this._pointComponent = new TripPointView(this._point);
 
@@ -65,8 +67,9 @@ class Point {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._pointComponent, prevPointEditComponent);
-      this._mode = Mode.DEFAULT;
+      replace(this._pointEditComponent, prevPointEditComponent);
+      // replace(this._pointComponent, prevPointEditComponent);
+      // this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -141,7 +144,7 @@ class Point {
 
   _handlerPointEditChange(point) {
     this._pointEditComponent.removerDatepicker();
-    this.init(point, this._pointOffers, this._pointDestinations);
+    this.init(point, this._pointOffers, this._pointDestinations, this._offersType, this._destinationsCity);
     this._pointEditComponent.setDatepicker();
   }
 
