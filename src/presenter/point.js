@@ -1,11 +1,19 @@
 import TripPointView from '../view/trip-point';
 import TripEditPointView from '../view/trip-edit';
 import {render, RenderPosition, replace, remove} from '../utils/render';
+import {isOnline} from '../utils/common';
+import {toast} from '../utils/toast';
 import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
+};
+
+const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
 };
 
 class Point {
@@ -28,17 +36,17 @@ class Point {
     this._handlerPointEditChange = this._handlerPointEditChange.bind(this);
   }
 
-  init(point, pointOffers, pointDestinations) {
+  init(point, pointOffers, pointDestinations, offersType, destinationsCity) {
     this._point = point;
     this._pointOffers = pointOffers.slice();
     this._pointDestinations = pointDestinations.slice();
+    this._offersType = offersType.slice();
+    this._destinationsCity = destinationsCity.slice();
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    const destinationPoint = this._pointDestinations.find((obj) => obj.name === this._point.destination);
-    const offersPointArr = this._pointOffers.find((obj) => obj.type === this._point.type).offers;
-    this._pointEditComponent = new TripEditPointView(this._point, offersPointArr, destinationPoint);
+    this._pointEditComponent = new TripEditPointView(this._point, this._pointOffers, this._pointDestinations, this._offersType, this._destinationsCity);
 
     this._pointComponent = new TripPointView(this._point);
 
@@ -79,6 +87,35 @@ class Point {
     }
   }
 
+  setViewState(state) {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._pointEditComponent.shake(resetFormState);
+        break;
+    }
+  }
+
   _switchPointToEdit() {
     this._pointEditComponent.setDatepicker();
 
@@ -105,11 +142,16 @@ class Point {
 
   _handlerPointEditChange(point) {
     this._pointEditComponent.removerDatepicker();
-    this.init(point, this._pointOffers, this._pointDestinations);
+    this.init(point, this._pointOffers, this._pointDestinations, this._offersType, this._destinationsCity);
     this._pointEditComponent.setDatepicker();
   }
 
   _handleEditClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit point offline');
+      return;
+    }
+
     this._switchPointToEdit();
   }
 
@@ -128,8 +170,11 @@ class Point {
   }
 
   _handleFormSubmit(point) {
-    this._switchPointToView();
-    // _Как можно в проекте оптимизировать обновление точки маршрута, как в демке 7.1.6
+    if (!isOnline()) {
+      toast('You can\'t save pint offline');
+      return;
+    }
+
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
@@ -138,6 +183,11 @@ class Point {
   }
 
   _handleDeleteClick(point) {
+    if (!isOnline()) {
+      toast('You can\'t delete point offline');
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
@@ -150,4 +200,5 @@ class Point {
   }
 }
 
+export { State };
 export default Point;

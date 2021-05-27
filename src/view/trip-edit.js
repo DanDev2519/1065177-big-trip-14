@@ -1,6 +1,4 @@
 import dayjs from 'dayjs';
-// import he from 'he';
-import {TRIP_TYPE, CITIES_VISITED} from '../const';
 import {upFirst} from '../utils/common';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
@@ -27,7 +25,7 @@ const createDestinationListMarkup = (list) => {
     </datalist>`;
 };
 
-const createSectionOffersMarkup = (offerArr, optionsArr) => {
+const createSectionOffersMarkup = (offerArr, optionsArr, isDisabled) => {
   return offerArr.length == 0 ? ''
     : `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -40,7 +38,8 @@ const createSectionOffersMarkup = (offerArr, optionsArr) => {
               data-name="${name}"
               data-cost="${cost}"
               name="event-offer-${name.toLowerCase()}-${i}"
-              ${optionsArr.filter((obj) => obj.name === name && obj.cost === cost)[0] ? 'checked' : ''}>
+              ${optionsArr.filter((obj) => obj.name === name && obj.cost === cost)[0] ? 'checked' : ''}
+              ${isDisabled ? 'disabled' : ''}>
             <label class="event__offer-label" for="event-offer-${name.toLowerCase()}-${i}">
               <span class="event__offer-title">${name}</span>
               &plus;&euro;&nbsp;
@@ -65,9 +64,9 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     </section>`;
 };
 
-const createTripEditMarkup = (point, offer, destinationInfo ) => {
-  const {type, dateIn, dateOut, destination, price, options} = point;
-  const {description = '', img = []} = destinationInfo;
+const createTripEditMarkup = (point, offer, destinationInfo, offersType, destinationsCity) => {
+  const {type, dateIn, dateOut, price, options, isDisabled, isSaving, isDeleting} = point;
+  const {description = '', img = [], name = ''} = destinationInfo;
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -77,24 +76,24 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-            ${createTypeListMarkup(TRIP_TYPE, type)}
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
+            ${createTypeListMarkup(offersType, type)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" ${CITIES_VISITED.length == 0 ? '' : 'list="destination-list-1"'}>
-            ${createDestinationListMarkup(CITIES_VISITED)}
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" ${destinationsCity.length == 0 ? '' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''}>
+            ${createDestinationListMarkup(destinationsCity)}
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateIn).format('DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateIn).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateOut).format('DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateOut).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -102,18 +101,22 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}"  required>
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''} required>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+            ${isSaving ? 'Saving...' : 'Save'}
+          </button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+            ${isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
+          <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
 
         <section class="event__details">
-          ${createSectionOffersMarkup(offer, options)}
+          ${createSectionOffersMarkup(offer, options, isDisabled)}
           ${createSectionDestinationMarkup(description, img)}
         </section>
       </form>
@@ -121,11 +124,16 @@ const createTripEditMarkup = (point, offer, destinationInfo ) => {
 };
 
 class TripEditPoint extends SmartView {
-  constructor(point, offer, destination) {
+  constructor(point, offers, destinations, offersType, destinationsCity) {
     super();
     this._pointData = TripEditPoint.parsePointToData(point);
-    this._offer = offer;
-    this._destination = destination;
+    this._offers = offers;
+    this._offer = this._offers.find((obj) => obj.type === this._pointData.type).offers;
+    this._destinations = destinations;
+    this._destination = this._destinations.find((obj) => obj.name === this._pointData.destination.name);
+
+    this._offersType = offersType.slice();
+    this._destinationsCity = destinationsCity.slice();
 
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -144,7 +152,7 @@ class TripEditPoint extends SmartView {
   }
 
   getTemplate() {
-    return createTripEditMarkup(this._pointData, this._offer, this._destination);
+    return createTripEditMarkup(this._pointData, this._offer, this._destination, this._offersType, this._destinationsCity);
   }
 
   restoreHandlers() {
@@ -233,21 +241,29 @@ class TripEditPoint extends SmartView {
 
   _destinationInputHandler(evt) {
     evt.preventDefault();
-    // _Правильная ли проверка
-    if (!CITIES_VISITED.includes(evt.target.value)) {
+    if (!this._destinationsCity.includes(evt.target.value)) {
       evt.target.setCustomValidity('Select a destination from the list');
       evt.target.reportValidity();
       return;
     }
+    const newDestination = this._destinations.find((obj) => obj.name === evt.target.value);
     this.updateData({
-      destination: evt.target.value,
+      destination: Object.assign(
+        {},
+        {
+          name: newDestination.name,
+          description: newDestination.description,
+          pictures: newDestination.img.map(({src, alt}) => {
+            return {src, description: alt};
+          }),
+        },
+      ),
     });
     this._callback.pointEditChange(TripEditPoint.parseDataToPoint(this._pointData));
   }
 
   _priceInputHandler(evt) {
     evt.preventDefault();
-    // _Правильная ли проверка
     evt.target.value = evt.target.value.replace(/[^\d]/g, '');
     if (!Number.isInteger(+evt.target.value)) {
       evt.target.value = this._pointData.price;
@@ -334,14 +350,25 @@ class TripEditPoint extends SmartView {
     return Object.assign(
       {},
       point,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
     );
   }
 
   static parseDataToPoint(data) {
-    return data = Object.assign(
+    data = Object.assign(
       {},
       data,
     );
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
   }
 }
 

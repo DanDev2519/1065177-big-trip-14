@@ -6,8 +6,8 @@ import AbstractView from './abstract';
 const tripNameMarkup = (objArr) => {
   const size = objArr.length;
   return size > 3
-    ? `${objArr[0].destination} &mdash; ... &mdash; ${objArr[size - 1].destination}`
-    : objArr.map(({destination}) => destination).join(' &mdash; ');
+    ? `${objArr[0].destination.name} &mdash; ... &mdash; ${objArr[size - 1].destination.name}`
+    : objArr.map((destination) => destination.name).join(' &mdash; ');
 };
 
 const tripDurationMarkup = (start, finish) => {

@@ -20,10 +20,15 @@ const sortObjByFieldDown = (field) => {
 
 const makeItemsUniq = (items) => [...new Set(items)];
 
+const isOnline = () => {
+  return window.navigator.onLine;
+};
+
 export {
   getRandomInteger,
   upFirst,
   sortObjByFieldUp,
   sortObjByFieldDown,
-  makeItemsUniq
+  makeItemsUniq,
+  isOnline
 };

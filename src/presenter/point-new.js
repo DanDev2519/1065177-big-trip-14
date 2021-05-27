@@ -1,6 +1,7 @@
-import {nanoid} from 'nanoid';
 import TripAddPointView from '../view/trip-create';
 import {render, RenderPosition, remove} from '../utils/render';
+import {isOnline} from '../utils/common';
+import {toast} from '../utils/toast';
 import {UserAction, UpdateType} from '../const.js';
 
 class PointNew {
@@ -15,11 +16,13 @@ class PointNew {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(pointOffers, pointDestinations) {
+  init(pointOffers, pointDestinations, offersType, destinationsCity) {
     this._pointOffers = pointOffers.slice();
     this._pointDestinations = pointDestinations.slice();
+    this._offersType = offersType.slice();
+    this._destinationsCity = destinationsCity.slice();
 
-    this._pointEditComponent = new TripAddPointView(this._pointOffers, this._pointDestinations);
+    this._pointEditComponent = new TripAddPointView(this._pointOffers, this._pointDestinations, this._offersType, this._destinationsCity);
 
     render(this._pointsListContainer, this._pointEditComponent, RenderPosition.AFTERBEGIN);
 
@@ -48,14 +51,35 @@ class PointNew {
     }
   }
 
+  setSaving() {
+    this._pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+      });
+    };
+
+    this._pointEditComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(point) {
-    // _Как можно в проекте оптимизировать обновление точки маршрута, как в демке 7.1.6
+    if (!isOnline()) {
+      toast('You can\'t save pint offline');
+      return;
+    }
+
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      Object.assign({id: nanoid()}, point),
+      point,
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {
