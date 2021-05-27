@@ -4,7 +4,7 @@ import AbstractView from './abstract';
 
 
 const createPointSelectedOffersMarkup = (options) => {
-  return options.length == 0
+  return options.length === 0
     ? ''
     : `<ul class="event__selected-offers">
         ${options.map(({name, cost}) => `<li class="event__offer">

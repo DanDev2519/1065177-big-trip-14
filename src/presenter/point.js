@@ -57,7 +57,7 @@ class Point {
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setPointEditChangeHandler(this._handlerPointEditChange);
 
-    if (prevPointComponent == null || prevPointEditComponent == null) {
+    if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointsListContainer, this._pointComponent, RenderPosition.BEFOREEND);
       return;
     }

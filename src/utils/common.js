@@ -6,7 +6,9 @@ const getRandomInteger = (a = 0, b = 1) => {
 };
 
 const upFirst = (str) => {
-  if (!str) return str;
+  if (!str) {
+    return str;
+  }
   return str[0].toUpperCase() + str.slice(1);
 };
 

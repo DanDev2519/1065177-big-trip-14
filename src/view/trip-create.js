@@ -16,7 +16,7 @@ const INITIAL_POINT = {
 };
 
 const createTypeListMarkup = (list, type) => {
-  return list.length == 0 ? ''
+  return list.length === 0 ? ''
     : `<div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Event type</legend>
@@ -29,14 +29,14 @@ const createTypeListMarkup = (list, type) => {
 };
 
 const createDestinationListMarkup = (list) => {
-  return list.length == 0 ? ''
+  return list.length === 0 ? ''
     : `<datalist id="destination-list-1">
       ${list.map((el) => `<option value="${el}"></option>`).join('')}
     </datalist>`;
 };
 
 const createSectionOffersMarkup = (offerArr, optionsArr, isDisabled) => {
-  return offerArr.length == 0 ? ''
+  return offerArr.length === 0 ? ''
     : `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
@@ -61,11 +61,11 @@ const createSectionOffersMarkup = (offerArr, optionsArr, isDisabled) => {
 };
 
 const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
-  return descriptionInfo == '' ? ''
+  return descriptionInfo === '' ? ''
     :`<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${descriptionInfo}</p>
-      ${imgArr.length == 0 ? ''
+      ${imgArr.length === 0 ? ''
     : `<div class="event__photos-container">
         <div class="event__photos-tape">
           ${imgArr.map(({src, alt}) => `<img class="event__photo" src="${src}" alt="${alt}">`).join('')}
@@ -94,7 +94,7 @@ const createTripAddMarkup = (point, offer, destinationInfo, offersType, destinat
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirst(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" ${destinationsCity.length == 0 ?'' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''} required>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" ${destinationsCity.length === 0 ?'' : 'list="destination-list-1"'} ${isDisabled ? 'disabled' : ''} required>
             ${createDestinationListMarkup(destinationsCity)}
           </div>
 
