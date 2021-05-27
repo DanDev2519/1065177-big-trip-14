@@ -7,6 +7,7 @@ import PointNewPresenter from './point-new';
 import {render, RenderPosition, remove} from '../utils/render';
 import {sortPointDayDown, sortPointTimeDown, sortPointPriceDown} from '../utils/trip';
 import {filter} from '../utils/filter';
+import {isOnline} from '../utils/common';
 import {SortType, UpdateType, UserAction, FilterType} from '../const';
 
 class Trip {
@@ -66,8 +67,10 @@ class Trip {
       this._pointNewPresenter = null;
     }
 
-    this._pointNewPresenter = new PointNewPresenter(this._pointsListContainer, this._handleViewAction);
-    this._pointNewPresenter.init(this._tripOffers, this._tripDestinations, this._getOffersType(), this._getDestinationsCity());
+    if (isOnline()) {
+      this._pointNewPresenter = new PointNewPresenter(this._pointsListContainer, this._handleViewAction);
+      this._pointNewPresenter.init(this._tripOffers, this._tripDestinations, this._getOffersType(), this._getDestinationsCity());
+    }
   }
 
   _getPoints() {
@@ -88,19 +91,19 @@ class Trip {
   }
 
   _getOffers() {
-    return this._offersModel.getOffers();
+    return this._offersModel.getOffers() || [];
   }
 
   _getOffersType() {
-    return this._offersModel.getOffersType();
+    return this._offersModel.getOffersType() || [];
   }
 
   _getDestinations() {
-    return this._destinationsModel.getDestinations();
+    return this._destinationsModel.getDestinations() || [];
   }
 
   _getDestinationsCity() {
-    return this._destinationsModel.getDestinationsCity();
+    return this._destinationsModel.getDestinationsCity() || [];
   }
 
   _handleModeChange() {

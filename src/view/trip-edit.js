@@ -64,9 +64,9 @@ const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
     </section>`;
 };
 
-const createTripEditMarkup = (point, offer, destinationInfo, offersType, destinationsCity) => {
-  const {type, dateIn, dateOut, price, options, isDisabled, isSaving, isDeleting} = point;
-  const {description = '', img = [], name = ''} = destinationInfo;
+const createTripEditMarkup = (point, offer, offersType, destinationsCity) => {
+  const {type, dateIn, dateOut, price, options, destination, isDisabled, isSaving, isDeleting} = point;
+  const {description = '', pictures: img = [], name = ''} = destination;
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -128,9 +128,9 @@ class TripEditPoint extends SmartView {
     super();
     this._pointData = TripEditPoint.parsePointToData(point);
     this._offers = offers;
-    this._offer = this._offers.find((obj) => obj.type === this._pointData.type).offers;
+    this._offerObject = this._offers.find((obj) => obj.type === this._pointData.type);
+    this._offer = this._offerObject ? this._offerObject.offers : [];
     this._destinations = destinations;
-    this._destination = this._destinations.find((obj) => obj.name === this._pointData.destination.name);
 
     this._offersType = offersType.slice();
     this._destinationsCity = destinationsCity.slice();
@@ -152,7 +152,7 @@ class TripEditPoint extends SmartView {
   }
 
   getTemplate() {
-    return createTripEditMarkup(this._pointData, this._offer, this._destination, this._offersType, this._destinationsCity);
+    return createTripEditMarkup(this._pointData, this._offer, this._offersType, this._destinationsCity);
   }
 
   restoreHandlers() {
@@ -338,7 +338,9 @@ class TripEditPoint extends SmartView {
       .addEventListener('change', this._destinationInputHandler);
     this.getElement()
       .querySelector('.event__type-list')
-      .addEventListener('change', this._eventTypeChangeHandler);
+      && this.getElement()
+        .querySelector('.event__type-list')
+        .addEventListener('change', this._eventTypeChangeHandler);
   }
 
   setDeleteClickHandler(callback) {
