@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
+const HOURS_IN_DAY = 24;
+
 const subtractDT = (start, end) => {
   const date1 = dayjs(end);
   const date2 = dayjs(start);
@@ -14,7 +16,7 @@ const setDifferenceHum = (difference) => {
   const diffAsHour = difference.asHours();
   if (diffAsHour < 1) {
     diffHum = difference.format('mm[M]');
-  } else if (diffAsHour < 24 && diffAsHour >= 1) {
+  } else if (diffAsHour < HOURS_IN_DAY && diffAsHour >= 1) {
     diffHum = difference.format('HH[H] mm[M]');
   } else {
     diffHum = difference.format('DD[D] HH[H] mm[M]');
