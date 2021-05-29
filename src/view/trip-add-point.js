@@ -169,6 +169,16 @@ class TripAddPoint extends SmartView {
     this.setDatepicker();
   }
 
+  setDatepicker() {
+    this._setStartDatepicker();
+    this._setEndDatepicker();
+  }
+
+  removerDatepicker() {
+    this._removerStartDatepicker();
+    this._removerEndDatepicker();
+  }
+
   _getCurrentOffers() {
     return this._offers.find((obj) => obj.type === this._pointData.type).offers;
   }
@@ -222,14 +232,17 @@ class TripAddPoint extends SmartView {
     }
   }
 
-  setDatepicker() {
-    this._setStartDatepicker();
-    this._setEndDatepicker();
-  }
+  _changeOffers(name, cost) {
+    let newOffers = this._pointData.options;
+    const isContain = newOffers.some((el) => el.name === name && el.cost === cost);
 
-  removerDatepicker() {
-    this._removerStartDatepicker();
-    this._removerEndDatepicker();
+    if(isContain) {
+      newOffers = newOffers.filter((el) => !(el.name === name && el.cost === cost));
+    } else {
+      newOffers.push({name:name, cost:cost});
+    }
+
+    return newOffers;
   }
 
   _setInnerHandlers() {
@@ -296,19 +309,6 @@ class TripAddPoint extends SmartView {
     this.updateData({
       options: this._changeOffers(evt.target.dataset.name, +evt.target.dataset.cost),
     }, true);
-  }
-
-  _changeOffers(name, cost) {
-    let newOffers = this._pointData.options;
-    const isContain = newOffers.some((el) => el.name === name && el.cost === cost);
-
-    if(isContain) {
-      newOffers = newOffers.filter((el) => !(el.name === name && el.cost === cost));
-    } else {
-      newOffers.push({name:name, cost:cost});
-    }
-
-    return newOffers;
   }
 
   _startDateChangeHandler([userDate]) {

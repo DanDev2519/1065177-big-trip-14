@@ -44,13 +44,6 @@ class PointNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
-  _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.destroy();
-    }
-  }
-
   setSaving() {
     this._pointEditComponent.updateData({
       isDisabled: true,
@@ -67,6 +60,13 @@ class PointNew {
     };
 
     this._pointEditComponent.shake(resetFormState);
+  }
+
+  _escKeyDownHandler(evt) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.destroy();
+    }
   }
 
   _handleFormSubmit(point) {

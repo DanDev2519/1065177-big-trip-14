@@ -20,19 +20,6 @@ class SiteMenu extends AbstractView {
     return createSiteMenuMarkup();
   }
 
-  _menuClickHandler(evt) {
-    evt.preventDefault();
-    if (this._currentMenu !== evt.target.dataset.menu) {
-      this._callback.menuClick(evt.target.dataset.menu);
-    }
-    this.setMenuItem(evt.target.dataset.menu);
-  }
-
-  setMenuClickHandler(callback) {
-    this._callback.menuClick = callback;
-    this.getElement().addEventListener('click', this._menuClickHandler);
-  }
-
   setMenuItem(menuItem) {
     const items = this.getElement().querySelectorAll('[data-menu]');
     this._currentMenu = menuItem;
@@ -44,6 +31,19 @@ class SiteMenu extends AbstractView {
         }
       });
     }
+  }
+
+  _menuClickHandler(evt) {
+    evt.preventDefault();
+    if (this._currentMenu !== evt.target.dataset.menu) {
+      this._callback.menuClick(evt.target.dataset.menu);
+    }
+    this.setMenuItem(evt.target.dataset.menu);
+  }
+
+  setMenuClickHandler(callback) {
+    this._callback.menuClick = callback;
+    this.getElement().addEventListener('click', this._menuClickHandler);
   }
 }
 
