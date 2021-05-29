@@ -3,11 +3,11 @@ import dayjs from 'dayjs';
 import AbstractView from './abstract';
 
 
-const tripNameMarkup = (objArr) => {
-  const size = objArr.length;
+const tripNameMarkup = (pointsByDateIn) => {
+  const size = pointsByDateIn.length;
   return size > 3
-    ? `${objArr[0].destination.name} &mdash; ... &mdash; ${objArr[size - 1].destination.name}`
-    : objArr.map((destination) => destination.name).join(' &mdash; ');
+    ? `${pointsByDateIn[0].destination.name} &mdash; ... &mdash; ${pointsByDateIn[size - 1].destination.name}`
+    : pointsByDateIn.map((destination) => destination.name).join(' &mdash; ');
 };
 
 const tripDurationMarkup = (start, finish) => {
@@ -28,8 +28,8 @@ const createTripInfoMarkup = (points) => {
   const finishes = points.map((point) => point.dateOut).sort();
   const pointsByDateIn = points.sort(sortObjByFieldUp('dateIn'));
   const sumPrices = points.reduce((accumulator, current) => accumulator + current.price, 0);
-  const sumOptionsPointArr = points.map((point) => point.options.reduce((accumulator, current) => accumulator + current.cost, 0));
-  const sumOptions = sumOptionsPointArr.reduce((accumulator, current) => accumulator + current, 0);
+  const sumOptionsPoints = points.map((point) => point.options.reduce((accumulator, current) => accumulator + current.cost, 0));
+  const sumOptions = sumOptionsPoints.reduce((accumulator, current) => accumulator + current, 0);
   const costTotal = sumOptions + sumPrices;
 
   return `<section class="trip-main__trip-info  trip-info">

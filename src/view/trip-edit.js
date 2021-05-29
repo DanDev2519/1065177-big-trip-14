@@ -25,20 +25,20 @@ const createDestinationListMarkup = (list) => {
     </datalist>`;
 };
 
-const createSectionOffersMarkup = (offerArr, optionsArr, isDisabled) => {
-  return offerArr.length === 0 ? ''
+const createSectionOffersMarkup = (offers, options, isDisabled) => {
+  return offers.length === 0 ? ''
     : `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-        ${offerArr.map(({name = '', cost}, i) => `<div class="event__offer-selector">
+        ${offers.map(({name = '', cost}, i) => `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden"
               id="event-offer-${name.toLowerCase()}-${i}"
               type="checkbox"
               data-name="${name}"
               data-cost="${cost}"
               name="event-offer-${name.toLowerCase()}-${i}"
-              ${optionsArr.filter((obj) => obj.name === name && obj.cost === cost)[0] ? 'checked' : ''}
+              ${options.filter((obj) => obj.name === name && obj.cost === cost)[0] ? 'checked' : ''}
               ${isDisabled ? 'disabled' : ''}>
             <label class="event__offer-label" for="event-offer-${name.toLowerCase()}-${i}">
               <span class="event__offer-title">${name}</span>
@@ -50,15 +50,15 @@ const createSectionOffersMarkup = (offerArr, optionsArr, isDisabled) => {
     </section>`;
 };
 
-const createSectionDestinationMarkup = (descriptionInfo, imgArr) => {
+const createSectionDestinationMarkup = (descriptionInfo, imgs) => {
   return descriptionInfo === '' ? ''
     :`<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${descriptionInfo}</p>
-      ${imgArr.length === 0 ? ''
+      ${imgs.length === 0 ? ''
     : `<div class="event__photos-container">
         <div class="event__photos-tape">
-          ${imgArr.map(({src, alt}) => `<img class="event__photo" src="${src}" alt="${alt}">`).join('')}
+          ${imgs.map(({src, alt}) => `<img class="event__photo" src="${src}" alt="${alt}">`).join('')}
         </div>
       </div>`}
     </section>`;
@@ -282,16 +282,16 @@ class TripEditPoint extends SmartView {
   }
 
   _changeOffers(name, cost) {
-    let newArr = this._pointData.options;
-    const isContain = newArr.some((el) => el.name === name && el.cost === cost);
+    let newOffers = this._pointData.options;
+    const isContain = newOffers.some((el) => el.name === name && el.cost === cost);
 
     if(isContain) {
-      newArr = newArr.filter((el) => !(el.name === name && el.cost === cost));
+      newOffers = newOffers.filter((el) => !(el.name === name && el.cost === cost));
     } else {
-      newArr.push({name:name, cost:cost});
+      newOffers.push({name:name, cost:cost});
     }
 
-    return newArr;
+    return newOffers;
   }
 
   _startDateChangeHandler([userDate]) {

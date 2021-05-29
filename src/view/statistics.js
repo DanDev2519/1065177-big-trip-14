@@ -9,16 +9,16 @@ const BAR_HEIGHT = 55;
 
 const renderMoneyChart = (moneyCtx, statisticsByTypes) => {
   const statisticsSortByTotalCost =  statisticsByTypes.sort(sortObjByFieldDown('totalCost'));
-  const labelsArr = statisticsSortByTotalCost.map(({type}) => type);
-  const dataArr = statisticsSortByTotalCost.map(({totalCost}) => totalCost);
+  const labels = statisticsSortByTotalCost.map(({type}) => type);
+  const data = statisticsSortByTotalCost.map(({totalCost}) => totalCost);
 
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: labelsArr,
+      labels: labels,
       datasets: [{
-        data: dataArr,
+        data: data,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -80,16 +80,16 @@ const renderMoneyChart = (moneyCtx, statisticsByTypes) => {
 
 const renderTypeChart = (typeCtx, statisticsByTypes) => {
   const statisticsSortByTotalCost =  statisticsByTypes.sort(sortObjByFieldDown('count'));
-  const labelsArr = statisticsSortByTotalCost.map(({type}) => type);
-  const dataArr = statisticsSortByTotalCost.map(({count}) => count);
+  const labels = statisticsSortByTotalCost.map(({type}) => type);
+  const data = statisticsSortByTotalCost.map(({count}) => count);
 
   return new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: labelsArr,
+      labels: labels,
       datasets: [{
-        data: dataArr,
+        data: data,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -151,16 +151,16 @@ const renderTypeChart = (typeCtx, statisticsByTypes) => {
 
 const renderTimeChart = (timeCtx, statisticsByTypes) => {
   const statisticsSortByTotalCost =  statisticsByTypes.sort(sortObjByFieldDown('timeSpend'));
-  const labelsArr = statisticsSortByTotalCost.map(({type}) => type);
-  const dataArr = statisticsSortByTotalCost.map(({timeSpend}) => timeSpend);
+  const labels = statisticsSortByTotalCost.map(({type}) => type);
+  const data = statisticsSortByTotalCost.map(({timeSpend}) => timeSpend);
 
   return new Chart(timeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: labelsArr,
+      labels: labels,
       datasets: [{
-        data: dataArr,
+        data: data,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -281,12 +281,12 @@ export default class Statistics extends AbstractView {
     const pointTypes = this._points.map((point) => point.type);
     const uniqTypes = makeItemsUniq(pointTypes);
     const statisticsByTypes = uniqTypes.map((type) => {
-      const pointsArrayOfType = this._points.filter((point) => point.type === type);
+      const pointsOfType = this._points.filter((point) => point.type === type);
       return {
         type,
-        totalCost: pointsArrayOfType.reduce((accumulator, obj) => accumulator + obj.price, 0),
-        count: pointsArrayOfType.length,
-        timeSpend: pointsArrayOfType.reduce((accumulator, obj) => {
+        totalCost: pointsOfType.reduce((accumulator, obj) => accumulator + obj.price, 0),
+        count: pointsOfType.length,
+        timeSpend: pointsOfType.reduce((accumulator, obj) => {
           return accumulator + subtractDT(obj.dateIn, obj.dateOut).asMinutes();
         }, 0),
       };
