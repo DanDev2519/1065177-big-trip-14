@@ -1,4 +1,4 @@
-import TripAddPointView from '../view/trip-create';
+import TripAddPointView from '../view/trip-add-point';
 import {render, RenderPosition, remove} from '../utils/render';
 import {isOnline} from '../utils/common';
 import {toast} from '../utils/toast';

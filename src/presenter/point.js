@@ -1,5 +1,5 @@
 import TripPointView from '../view/trip-point';
-import TripEditPointView from '../view/trip-edit';
+import TripEditPointView from '../view/trip-edit-point';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isOnline} from '../utils/common';
 import {toast} from '../utils/toast';

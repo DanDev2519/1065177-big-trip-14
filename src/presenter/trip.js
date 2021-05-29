@@ -1,6 +1,6 @@
 import TripSortView from '../view/trip-sort';
-import TripEventsLisView from '../view/trip-point-list';
-import MessageCreatePointView from '../view/trip-message';
+import TripEventsListView from '../view/trip-events-list';
+import MessageCreatePointView from '../view/message-create-point';
 import SiteLoadingView from '../view/site-loading';
 import PointPresenter, {State as PointPresenterViewState} from './point';
 import PointNewPresenter from './point-new';
@@ -217,7 +217,7 @@ class Trip {
       this._pointsListComponent = null;
     }
 
-    this._pointsListComponent = new TripEventsLisView();
+    this._pointsListComponent = new TripEventsListView();
 
     render(this._tripContainer, this._pointsListComponent);
 

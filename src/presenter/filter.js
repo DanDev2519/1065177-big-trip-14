@@ -1,4 +1,4 @@
-import FilterView from '../view/site-filters';
+import FilterView from '../view/filter';
 import {render, replace, remove} from '../utils/render';
 import {filter} from '../utils/filter';
 import {FilterType, UpdateType} from '../const';

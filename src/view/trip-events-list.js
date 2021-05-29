@@ -5,10 +5,10 @@ const createTripEventsListMarkup = () => {
     </ul>`;
 };
 
-class TripEventsLis extends AbstractView {
+class TripEventsList extends AbstractView {
   getTemplate() {
     return createTripEventsListMarkup();
   }
 }
 
-export default TripEventsLis;
+export default TripEventsList;
