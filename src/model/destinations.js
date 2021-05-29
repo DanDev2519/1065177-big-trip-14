@@ -11,11 +11,11 @@ class Destinations extends Observer {
   }
 
   getDestinations() {
-    return this._destinations;
+    return this._destinations || [];
   }
 
   getDestinationsCity() {
-    return this._destinations.map((destination) => destination.name);
+    return this._destinations.map((destination) => destination.name) || [];
   }
 
   static adaptToClient(destination) {

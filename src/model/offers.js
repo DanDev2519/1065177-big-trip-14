@@ -11,11 +11,11 @@ class Offers extends Observer {
   }
 
   getOffers() {
-    return this._offers;
+    return this._offers || [];
   }
 
   getOffersType() {
-    return this._offers.map((offer) => offer.type);
+    return this._offers.map((offer) => offer.type) || [];
   }
 
   static adaptToClient(offer) {

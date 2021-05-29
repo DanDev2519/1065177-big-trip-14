@@ -91,19 +91,19 @@ class Trip {
   }
 
   _getOffers() {
-    return this._offersModel.getOffers() || [];
+    return this._offersModel.getOffers();
   }
 
   _getOffersType() {
-    return this._offersModel.getOffersType() || [];
+    return this._offersModel.getOffersType();
   }
 
   _getDestinations() {
-    return this._destinationsModel.getDestinations() || [];
+    return this._destinationsModel.getDestinations();
   }
 
   _getDestinationsCity() {
-    return this._destinationsModel.getDestinationsCity() || [];
+    return this._destinationsModel.getDestinationsCity();
   }
 
   _handleModeChange() {
